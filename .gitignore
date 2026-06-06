@@ -62,3 +62,7 @@ seed_produtos.js
 # Node
 node_modules/
 functions/node_modules/
+"petjoy_release.keystore" 
+"android/app/google-servicesOLD.json" 
+"android/app/google-services_PetJoy.json" 
+"URL do webhook do MercadoPago.txt" 
