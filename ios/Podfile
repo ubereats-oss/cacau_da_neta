@@ -48,6 +48,9 @@ post_install do |installer|
 
     target.build_configurations.each do |config|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
+      config.build_settings['INFOPLIST_KEY_NSPhotoLibraryUsageDescription'] = 'Necessário para selecionar fotos dos produtos.'
+      config.build_settings['INFOPLIST_KEY_NSCameraUsageDescription'] = 'Necessário para fotografar produtos.'
+      config.build_settings['INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription'] = 'Necessário para salvar fotos dos produtos.'
     end
   end
 end
