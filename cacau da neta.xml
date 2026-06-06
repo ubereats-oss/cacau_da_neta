@@ -40,17 +40,17 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-.firebaserc
 .gitignore
 .metadata
 analysis_options.yaml
 android/.gitignore
 android/app/build.gradle.kts
+android/app/google-services_PetJoy.json
 android/app/google-services.json
 android/app/google-servicesOLD.json
 android/app/src/debug/AndroidManifest.xml
 android/app/src/main/AndroidManifest.xml
-android/app/src/main/kotlin/com/example/petjoy_app/MainActivity.kt
+android/app/src/main/kotlin/com/cacau/daneta/MainActivity.kt
 android/app/src/main/res/drawable-v21/launch_background.xml
 android/app/src/main/res/drawable/launch_background.xml
 android/app/src/main/res/mipmap-hdpi/ic_launcher.png
@@ -76,9 +76,11 @@ assets/images/Cha de casca  + Nibs.jpeg
 assets/images/Cha de casca de cacau 120g.jpeg
 assets/images/Cha de casca de cacau 150g.jpeg
 assets/images/Cha de casca de cacau 30g.jpeg
+assets/images/Imagens Cacau da neta.zip
 assets/images/lavamax_icon.png
 assets/images/lavamax_logo.png
 assets/images/Logomarca com nome.jpeg
+assets/images/logomarca.png
 assets/images/Nibs de cacau 120g.jpeg
 assets/images/Nibs de cacau 150g.jpeg
 assets/images/Nibs de cacau 200g.jpeg
@@ -91,6 +93,7 @@ assets/images/Produtos 1.jpeg
 assets/images/Produtos 2.jpeg
 assets/images/Produtos.jpg
 auditoria_codigo_py.txt
+codemagic.yaml
 debug_planilha.js
 exportar_codigo.py
 firebase.json
@@ -104,7 +107,7 @@ ios/.gitignore
 ios/Flutter/AppFrameworkInfo.plist
 ios/Flutter/Debug.xcconfig
 ios/Flutter/Release.xcconfig
-ios/Podfile.lock
+ios/Podfile
 ios/Runner.xcodeproj/project.pbxproj
 ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata
 ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
@@ -146,6 +149,7 @@ ios/Runner/Base.lproj/Main.storyboard
 ios/Runner/GoogleService-Info.plist
 ios/Runner/Info.plist
 ios/Runner/Runner-Bridging-Header.h
+ios/Runner/Runner.entitlements
 ios/Runner/SceneDelegate.swift
 ios/RunnerTests/RunnerTests.swift
 lib_tree.txt
@@ -229,13 +233,13 @@ macos/Runner/Release.entitlements
 macos/RunnerTests/RunnerTests.swift
 normalizar_dart.py
 Nossos Produtos (Pet Joy).docx
+package.json
 petjoy_release.keystore
 preparar_auditoria_petjoy.ps1
 preparar_auditoria.ps1
 pubspec.lock
 pubspec.yaml
 README.md
-serviceAccountKeyPetJoy.json
 test/widget_test.dart
 URL do webhook do MercadoPago.txt
 web/favicon.png
@@ -267,65 +271,6 @@ windows/runner/win32_window.h
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path=".firebaserc">
-{
-  "projects": {
-    "default": "petjoyapp-fac7f"
-  }
-}
-</file>
-
-<file path=".gitignore">
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
-
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
-/coverage/
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-
-serviceAccountKey.json
-serviceAccountKeyLavaMax.json
-</file>
 
 <file path=".metadata">
 # This file tracks properties of this Flutter project.
@@ -423,154 +368,55 @@ key.properties
 **/*.jks
 </file>
 
-<file path="android/app/build.gradle.kts">
-import java.util.Properties
-
-plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("com.google.gms.google-services")
-    id("dev.flutter.flutter-gradle-plugin")
-}
-
-val keyProperties = Properties()
-val keyPropertiesFile = rootProject.file("key.properties")
-if (keyPropertiesFile.exists()) {
-    keyProperties.load(keyPropertiesFile.inputStream())
-}
-
-android {
-    namespace = "com.petjoy.app"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-
-    defaultConfig {
-        applicationId = "com.petjoy.app"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
-    }
-
-    signingConfigs {
-        create("release") {
-            keyAlias = keyProperties["keyAlias"] as String
-            keyPassword = keyProperties["keyPassword"] as String
-            storeFile = file(keyProperties["storeFile"] as String)
-            storePassword = keyProperties["storePassword"] as String
-        }
-    }
-
-    buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("release")
-        }
-    }
-}
-
-flutter {
-    source = "../.."
-}
-</file>
-
 <file path="android/app/google-services.json">
 {
   "project_info": {
-    "project_number": "832723228892",
-    "project_id": "petjoyapp-fac7f",
-    "storage_bucket": "petjoyapp-fac7f.firebasestorage.app"
+    "project_number": "594909165569",
+    "project_id": "cacau-da-neta",
+    "storage_bucket": "cacau-da-neta.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:832723228892:android:cc9f2310aff2aba6917c19",
+        "mobilesdk_app_id": "1:594909165569:android:abefc81b55f93a6cb7a800",
         "android_client_info": {
-          "package_name": "com.petjoy.app"
+          "package_name": "com.cacau.daneta"
         }
       },
       "oauth_client": [
         {
-          "client_id": "832723228892-3hfa9q7fqf7idr9rq59hupacgh9sn5ip.apps.googleusercontent.com",
+          "client_id": "594909165569-gujgq76kt2li2rp7rojq6bmbr3nnrset.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.petjoy.app",
-            "certificate_hash": "219c1cf5929132d1360c43de0392956497056990"
-          }
-        },
-        {
-          "client_id": "832723228892-jvq3f1ir8cqjs6backg3ju8bh46j0g6t.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.petjoy.app",
+            "package_name": "com.cacau.daneta",
             "certificate_hash": "1671594c0a461d559941ebf5b8977ebc1d20ae66"
           }
         },
         {
-          "client_id": "832723228892-n3se1eus660sq212clq6gk3ljj7qg9as.apps.googleusercontent.com",
+          "client_id": "594909165569-chnbvffplq8f3j60lenfp25t1qarnim7.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA1l_2nCLKxB9vqtov3DtxCqmuqtYs7zV4"
+          "current_key": "AIzaSyC06uffq_fiiZfBlkv19o5uMVggZ7SoJpI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "832723228892-n3se1eus660sq212clq6gk3ljj7qg9as.apps.googleusercontent.com",
+              "client_id": "594909165569-chnbvffplq8f3j60lenfp25t1qarnim7.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "832723228892-aote0v2eej84tskda5mnicdr1pdam15s.apps.googleusercontent.com",
+              "client_id": "594909165569-5km60h0hgg61su3ar2p7efd0ouqcjst5.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.petjoyApp"
+                "bundle_id": "com.cacau.daneta"
               }
             }
           ]
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
-}
-</file>
-
-<file path="android/app/google-servicesOLD.json">
-{
-  "project_info": {
-    "project_number": "832723228892",
-    "project_id": "petjoyapp-fac7f",
-    "storage_bucket": "petjoyapp-fac7f.firebasestorage.app"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:832723228892:android:cc9f2310aff2aba6917c19",
-        "android_client_info": {
-          "package_name": "com.petjoy.app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA1l_2nCLKxB9vqtov3DtxCqmuqtYs7zV4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
         }
       }
     }
@@ -592,7 +438,7 @@ flutter {
 <file path="android/app/src/main/AndroidManifest.xml">
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="PetJoy"
+        android:label="Cacau da Neta"
         android:name="${applicationName}"
         android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher">
@@ -626,8 +472,8 @@ flutter {
 </manifest>
 </file>
 
-<file path="android/app/src/main/kotlin/com/example/petjoy_app/MainActivity.kt">
-package com.petjoy.app
+<file path="android/app/src/main/kotlin/com/cacau/daneta/MainActivity.kt">
+package com.cacau.daneta
 
 import io.flutter.embedding.android.FlutterActivity
 
@@ -746,6 +592,10 @@ tasks.register<Delete>("clean") {
 <file path="android/gradle.properties">
 org.gradle.jvmargs=-Xmx8G -XX:MaxMetaspaceSize=4G -XX:ReservedCodeCacheSize=512m -XX:+HeapDumpOnOutOfMemoryError
 android.useAndroidX=true
+# This builtInKotlin flag was added automatically by Flutter migrator
+android.builtInKotlin=false
+# This newDsl flag was added automatically by Flutter migrator
+android.newDsl=false
 </file>
 
 <file path="android/gradle/wrapper/gradle-wrapper.properties">
@@ -798,7 +648,7 @@ Uso:
     python apply_fixes.py <caminho_raiz_do_projeto>
 
 Exemplo:
-    python apply_fixes.py "C:/Users/Alex Salles/Apps - desenvolvimento/petjoy_app"
+    python apply_fixes.py "C:/Users/Alex Salles/Apps - desenvolvimento/cacau da neta"
 """
 
 import sys
@@ -906,7 +756,7 @@ def main():
         "  );\n"
         "  runApp(\n"
         "    const ProviderScope(\n"
-        "      child: PetJoyApp(),\n"
+        "      child: CacauDaNetaApp(),\n"
         "    ),\n"
         "  );\n"
         "}",
@@ -928,7 +778,7 @@ def main():
         "  );\n"
         "  runApp(\n"
         "    const ProviderScope(\n"
-        "      child: PetJoyApp(),\n"
+        "      child: CacauDaNetaApp(),\n"
         "    ),\n"
         "  );\n"
         "}",
@@ -1863,6 +1713,58 @@ if __name__ == "__main__":
     main()
 </file>
 
+<file path="codemagic.yaml">
+workflows:
+  ios-app-store:
+    name: iOS App Store
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.cacau.daneta
+      vars:
+        BUNDLE_ID: com.cacau.daneta
+        BUILD_NAME: 1.0.0
+        BUILD_NUMBER: 1
+    cache:
+      cache_paths:
+        - ~/.pub-cache
+        - ios/Pods
+    scripts:
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+      - name: Install pods
+        script: |
+          cd ios
+          pod install
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Flutter analyze
+        script: |
+          flutter analyze
+      - name: Build signed IPA
+        script: |
+          flutter build ipa --release \
+            --build-name="$BUILD_NAME" \
+            --build-number="$BUILD_NUMBER" \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+</file>
+
 <file path="debug_planilha.js">
 const XLSX = require('xlsx');
 const path = require('path');
@@ -2002,50 +1904,7 @@ print(f"  Total de arquivos exportados: {file_count}")
 </file>
 
 <file path="firebase.json">
-{
-  "flutter": {
-    "platforms": {
-      "android": {
-        "default": {
-          "projectId": "petjoyapp-fac7f",
-          "appId": "1:832723228892:android:cc9f2310aff2aba6917c19",
-          "fileOutput": "android/app/google-services.json"
-        }
-      },
-      "dart": {
-        "lib/firebase_options.dart": {
-          "projectId": "petjoyapp-fac7f",
-          "configurations": {
-            "android": "1:832723228892:android:cc9f2310aff2aba6917c19",
-            "ios": "1:832723228892:ios:4c9a3d88b8e0e79c917c19",
-            "web": "1:832723228892:web:1fb7e5a654e120a9917c19",
-            "windows": "1:832723228892:web:1fb7e5a654e120a9917c19"
-          }
-        }
-      }
-    }
-  },
-  "functions": [
-    {
-      "source": "functions",
-      "codebase": "default",
-      "disallowLegacyRuntimeConfig": true,
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "*.local"
-      ]
-    }
-  ],
-  "firestore": {
-    "database": "(default)",
-    "location": "southamerica-east1",
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  }
-}
+{"flutter":{"platforms":{"android":{"default":{"projectId":"cacau-da-neta","appId":"1:594909165569:android:abefc81b55f93a6cb7a800","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"cacau-da-neta","configurations":{"android":"1:594909165569:android:abefc81b55f93a6cb7a800","ios":"1:594909165569:ios:5e8d2ecfc4bf19c2b7a800","macos":"1:594909165569:ios:624afc01acf18e6cb7a800","web":"1:594909165569:web:89e6ae1c47aeba08b7a800","windows":"1:594909165569:web:e3c38b76be3093ccb7a800"}}}}},"functions":[{"source":"functions","codebase":"default","disallowLegacyRuntimeConfig":true,"ignore":["node_modules",".git","firebase-debug.log","firebase-debug.*.log","*.local"]}],"firestore":{"database":"(default)","location":"southamerica-east1","rules":"firestore.rules","indexes":"firestore.indexes.json"}}
 </file>
 
 <file path="firestore.indexes.json">
@@ -2155,11 +2014,11 @@ node_modules/
 
 <file path="functions/index.js">
 /**
- * Cloud Functions — Cacau da Neta
+ * Cloud Functions - Cacau da Neta
  *
- * Funções:
- *   criarPagamentoPix  — callable — cria pagamento Pix no Mercado Pago
- *   webhookMercadoPago — HTTPS   — recebe notificações de pagamento do MP
+ * Funcoes:
+ *   criarPagamentoPix  - callable - cria pagamento Pix no Mercado Pago
+ *   webhookMercadoPago - HTTPS    - recebe notificacoes de pagamento do MP
  *
  * Setup inicial (executar UMA VEZ no terminal):
  *   firebase functions:secrets:set MERCADOPAGO_ACCESS_TOKEN
@@ -2185,16 +2044,10 @@ setGlobalOptions({
   maxInstances: 10,
 });
 
-// Secret Manager — token nunca fica exposto no código ou no Firestore
 const mpAccessToken = defineSecret("MERCADOPAGO_ACCESS_TOKEN");
+const webhookMercadoPagoUrl =
+  "https://southamerica-east1-cacau-da-neta.cloudfunctions.net/webhookMercadoPago";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Utilitários
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Faz uma requisição HTTPS e retorna { statusCode, body (objeto parseado) }.
- */
 function mpRequest({ method, path, body, token }) {
   return new Promise((resolve, reject) => {
     const payload = body ? JSON.stringify(body) : null;
@@ -2208,6 +2061,7 @@ function mpRequest({ method, path, body, token }) {
         "X-Idempotency-Key": body?.external_reference ?? Date.now().toString(),
       },
     };
+
     if (payload) {
       options.headers["Content-Length"] = Buffer.byteLength(payload);
     }
@@ -2230,35 +2084,29 @@ function mpRequest({ method, path, body, token }) {
   });
 }
 
-/**
- * Lê a configuração do Mercado Pago salva no Firestore (sandbox flag).
- * O accessToken vem exclusivamente do Secret Manager.
- */
 async function getMpConfig(db) {
   const doc = await db.collection("settings").doc("mercadopago").get();
   if (!doc.exists) return { sandbox: true };
   return doc.data();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// criarPagamentoPix
-// ─────────────────────────────────────────────────────────────────────────────
-
 exports.criarPagamentoPix = onCall(
   {
     secrets: [mpAccessToken],
-    enforceAppCheck: false, // habilite após configurar App Check
+    enforceAppCheck: false,
   },
   async (request) => {
-    // 1. Autenticação
     if (!request.auth) {
-      throw new HttpsError("unauthenticated", "Usuário não autenticado.");
+      throw new HttpsError("unauthenticated", "Usuario nao autenticado.");
     }
 
     const { orderId, total, customerEmail, customerName } = request.data;
 
     if (!orderId || !total || !customerEmail || !customerName) {
-      throw new HttpsError("invalid-argument", "Parâmetros obrigatórios ausentes.");
+      throw new HttpsError(
+        "invalid-argument",
+        "Parametros obrigatorios ausentes."
+      );
     }
 
     const db = getFirestore();
@@ -2267,16 +2115,15 @@ exports.criarPagamentoPix = onCall(
     if (!token) {
       throw new HttpsError(
         "failed-precondition",
-        "Token do Mercado Pago não configurado. Configure o secret MERCADOPAGO_ACCESS_TOKEN."
+        "Token do Mercado Pago nao configurado. Configure o secret MERCADOPAGO_ACCESS_TOKEN."
       );
     }
 
-    // 2. Verifica se o pedido existe e pertence ao usuário
     const orderRef = db.collection("orders").doc(orderId);
     const orderSnap = await orderRef.get();
 
     if (!orderSnap.exists) {
-      throw new HttpsError("not-found", "Pedido não encontrado.");
+      throw new HttpsError("not-found", "Pedido nao encontrado.");
     }
 
     const orderData = orderSnap.data();
@@ -2284,16 +2131,16 @@ exports.criarPagamentoPix = onCall(
       throw new HttpsError("permission-denied", "Acesso negado.");
     }
 
-    // 3. Lê configuração (sandbox)
     const config = await getMpConfig(db);
 
-    // 4. Cria pagamento Pix no Mercado Pago
     const paymentBody = {
       transaction_amount: Number(total.toFixed(2)),
-      description: `Pedido Cacau da Neta #${orderId.substring(0, 8).toUpperCase()}`,
+      description: `Pedido Cacau da Neta #${orderId
+        .substring(0, 8)
+        .toUpperCase()}`,
       payment_method_id: "pix",
       external_reference: orderId,
-      notification_url: "https://webhookmercadopago-klxlcaoqfq-rj.a.run.app",
+      notification_url: webhookMercadoPagoUrl,
       payer: {
         email: customerEmail,
         first_name: customerName.split(" ")[0] ?? customerName,
@@ -2322,7 +2169,6 @@ exports.criarPagamentoPix = onCall(
       payment.point_of_interaction?.transaction_data?.qr_code_base64 ?? "";
     const paymentId = String(payment.id);
 
-    // 5. Salva dados do Pix no pedido
     await orderRef.update({
       pixCode,
       pixQrCodeBase64,
@@ -2332,41 +2178,36 @@ exports.criarPagamentoPix = onCall(
       updatedAt: FieldValue.serverTimestamp(),
     });
 
-    console.log(`Pix criado — orderId: ${orderId} | paymentId: ${paymentId} | sandbox: ${config.sandbox}`);
+    console.log(
+      `Pix criado - orderId: ${orderId} | paymentId: ${paymentId} | sandbox: ${config.sandbox}`
+    );
 
     return { pixCode, pixQrCodeBase64, paymentId };
   }
 );
-
-// ─────────────────────────────────────────────────────────────────────────────
-// webhookMercadoPago
-// ─────────────────────────────────────────────────────────────────────────────
 
 exports.webhookMercadoPago = onRequest(
   {
     secrets: [mpAccessToken],
   },
   async (req, res) => {
-    // O MP exige resposta 200 imediata para não reenviar
     res.status(200).send("OK");
 
     try {
-      // Aceita tanto query param (IPN legado) quanto body JSON (Webhooks v2)
       const type = req.body?.type ?? req.query?.topic;
       const dataId = req.body?.data?.id ?? req.query?.id;
 
       if (type !== "payment" || !dataId) {
-        console.log("Webhook ignorado — tipo:", type, "id:", dataId);
+        console.log("Webhook ignorado - tipo:", type, "id:", dataId);
         return;
       }
 
       const token = mpAccessToken.value();
       if (!token) {
-        console.error("Secret MERCADOPAGO_ACCESS_TOKEN não configurado.");
+        console.error("Secret MERCADOPAGO_ACCESS_TOKEN nao configurado.");
         return;
       }
 
-      // Consulta o pagamento na API do MP para obter status atualizado
       const { statusCode, body: payment } = await mpRequest({
         method: "GET",
         path: `/v1/payments/${dataId}`,
@@ -2374,19 +2215,22 @@ exports.webhookMercadoPago = onRequest(
       });
 
       if (statusCode !== 200) {
-        console.error("Erro ao consultar pagamento:", statusCode, JSON.stringify(payment));
+        console.error(
+          "Erro ao consultar pagamento:",
+          statusCode,
+          JSON.stringify(payment)
+        );
         return;
       }
 
       const orderId = payment.external_reference;
-      const mpStatus = payment.status; // approved | pending | rejected | cancelled
+      const mpStatus = payment.status;
 
       if (!orderId) {
-        console.log("Webhook sem external_reference — paymentId:", dataId);
+        console.log("Webhook sem external_reference - paymentId:", dataId);
         return;
       }
 
-      // Mapeia status MP → status do pedido
       const statusMap = {
         approved: "confirmed",
         pending: "awaiting_payment",
@@ -2404,7 +2248,7 @@ exports.webhookMercadoPago = onRequest(
       const orderSnap = await orderRef.get();
 
       if (!orderSnap.exists) {
-        console.error("Pedido não encontrado para orderId:", orderId);
+        console.error("Pedido nao encontrado para orderId:", orderId);
         return;
       }
 
@@ -2415,9 +2259,10 @@ exports.webhookMercadoPago = onRequest(
         updatedAt: FieldValue.serverTimestamp(),
       });
 
-      console.log(`Webhook processado — orderId: ${orderId} | mpStatus: ${mpStatus} | orderStatus: ${orderStatus}`);
+      console.log(
+        `Webhook processado - orderId: ${orderId} | mpStatus: ${mpStatus} | orderStatus: ${orderStatus}`
+      );
     } catch (err) {
-      // Não relança — o 200 já foi enviado e o MP não vai reenviar
       console.error("Erro no webhook:", err);
     }
   }
@@ -2455,32 +2300,40 @@ exports.webhookMercadoPago = onRequest(
  * importar_produtos.js
  *
  * Importa produtos de uma planilha Excel para o Firestore.
- * Evita duplicatas: se o produto já existir (mesmo nome + quantidade),
- * atualiza o preço. Se não existir, cria.
+ * Evita duplicatas: se o produto ja existir (mesmo nome + quantidade),
+ * atualiza o preco. Se nao existir, cria.
  *
  * USO:
  *   node importar_produtos.js                        <- usa Lista_de_produtos.xlsx
  *   node importar_produtos.js outra_planilha.xlsx    <- usa outro arquivo
  *
  * FORMATO ESPERADO DA PLANILHA:
- *   Coluna B: Nome do produto
- *   Coluna C: Quantidade (ex: 250g, 100g, 50g)
- *   Coluna D: Preço (número)
- *   Coluna E: Animal (cachorro | gato | ambos)
- *   Linha 1: ignorada (cabeçalho ou vazia)
- *   Linha 2: cabeçalho (Nome, Quantity, Preço, Animal) — ignorada
- *   A partir da linha 3: dados
+ *   Linha 1: cabeçalho (Nome | Quantity | Preço | Categoria)
+ *   Linha 2+: dados
+ *   Coluna A: Nome
+ *   Coluna B: Quantity (ex: 250g)
+ *   Coluna C: Preço (número)
+ *   Coluna D: Categoria (ex: Nibs | Chá | Amêndoas | Geral)
  */
 
-const admin = require('firebase-admin');
-const XLSX = require('xlsx');
-const path = require('path');
+const admin = require("firebase-admin");
+const XLSX = require("xlsx");
+const fs = require("fs");
+const path = require("path");
 
-// ---- Configuração ----
-const SERVICE_ACCOUNT_PATH = path.join(__dirname, 'serviceAccountKeyPetJoy.json');
-const ARQUIVO_XLSX = process.argv[2] || 'Lista_de_produtos.xlsx';
+const SERVICE_ACCOUNT_PATH = process.env.GOOGLE_APPLICATION_CREDENTIALS
+  ? path.resolve(process.env.GOOGLE_APPLICATION_CREDENTIALS)
+  : path.join(__dirname, "serviceAccountKeyCacauDaNeta.json");
+const ARQUIVO_XLSX = process.argv[2] || "Lista_de_produtos.xlsx";
 
-// ---- Inicializa Firebase ----
+if (!fs.existsSync(SERVICE_ACCOUNT_PATH)) {
+  console.error(
+    `Credencial Firebase nao encontrada: ${SERVICE_ACCOUNT_PATH}\n` +
+      "Defina GOOGLE_APPLICATION_CREDENTIALS ou crie serviceAccountKeyCacauDaNeta.json."
+  );
+  process.exit(1);
+}
+
 const serviceAccount = require(SERVICE_ACCOUNT_PATH);
 
 admin.initializeApp({
@@ -2489,7 +2342,10 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// ---- Lê a planilha ----
+function mapCategoria(categoria) {
+  return categoria && categoria.trim().length > 0 ? categoria.trim() : "Geral";
+}
+
 function lerPlanilha(caminho) {
   const wb = XLSX.readFile(caminho);
   const ws = wb.Sheets[wb.SheetNames[0]];
@@ -2497,82 +2353,77 @@ function lerPlanilha(caminho) {
 
   const produtos = [];
 
-  // Linha 0 = vazia, linha 1 = cabeçalho → começa na linha 2 (índice 2)
-  for (let i = 2; i < rows.length; i++) {
+  for (let i = 1; i < rows.length; i++) {
     const row = rows[i];
 
-    // Colunas: A=0, B=1, C=2, D=3, E=4
-    const nome = (row[1] || '').toString().trim();
-    const quantidade = (row[2] || '').toString().trim();
-    const preco = parseFloat(row[3]) || 0;
-    const animal = (row[4] || '').toString().trim().toLowerCase();
+    const nome = (row[0] || "").toString().trim();
+    const quantidade = (row[1] || "").toString().trim();
+    const preco =
+      parseFloat(
+        (row[2] || "")
+          .toString()
+          .replace("R$", "")
+          .replace(".", "")
+          .replace(",", ".")
+      ) || 0;
+    const categoria = (row[3] || "").toString().trim();
 
     if (!nome || preco === 0) continue;
 
-    produtos.push({ nome, quantidade, preco, animal });
+    produtos.push({ nome, quantidade, preco, categoria });
   }
 
   return produtos;
 }
 
-// ---- Mapeia animal para categoria legível ----
-function mapearCategoria(animal) {
-  switch (animal) {
-    case 'cachorro': return 'Cachorro';
-    case 'gato':     return 'Gato';
-    case 'ambos':    return 'Ambos';
-    default:         return animal || 'Geral';
-  }
-}
-
-// ---- Importa para o Firestore ----
 async function importar(produtos) {
-  const colecao = db.collection('products');
+  const colecao = db.collection("products");
   let criados = 0;
   let atualizados = 0;
   let erros = 0;
 
   for (const p of produtos) {
     try {
-      const descricao = p.quantidade ? `Embalagem: ${p.quantidade}` : '';
-      const categoria = mapearCategoria(p.animal);
+      const descricao = p.quantidade ? `Embalagem: ${p.quantidade}` : "";
+      const categoria = mapCategoria(p.categoria);
 
-      // Chave de deduplicação: nome + quantidade
       const snapshot = await colecao
-        .where('name', '==', p.nome)
-        .where('description', '==', descricao)
+        .where("name", "==", p.nome)
+        .where("description", "==", descricao)
         .limit(1)
         .get();
 
       const agora = admin.firestore.FieldValue.serverTimestamp();
 
       if (!snapshot.empty) {
-        // Atualiza preço e categoria se o produto já existir
         await snapshot.docs[0].ref.update({
           price: p.preco,
           category: categoria,
           updatedAt: agora,
         });
-        console.log(`  ✏️  Atualizado: ${p.nome} (${p.quantidade}) → R$ ${p.preco.toFixed(2)}`);
+        console.log(
+          `  Atualizado: ${p.nome} (${p.quantidade}) -> R$ ${p.preco.toFixed(2)}`
+        );
         atualizados++;
       } else {
-        // Cria novo produto
         await colecao.add({
           name: p.nome,
           description: descricao,
           price: p.preco,
           category: categoria,
-          imageUrl: '',
+          imageUrl: "",
           isActive: true,
           isFeatured: false,
           createdAt: agora,
           updatedAt: agora,
         });
-        console.log(`  ✅  Criado:     ${p.nome} (${p.quantidade}) → R$ ${p.preco.toFixed(2)}`);
+        console.log(
+          `  Criado:     ${p.nome} (${p.quantidade}) -> R$ ${p.preco.toFixed(2)}`
+        );
         criados++;
       }
     } catch (err) {
-      console.error(`  ❌  Erro em "${p.nome}": ${err.message}`);
+      console.error(`  Erro em "${p.nome}": ${err.message}`);
       erros++;
     }
   }
@@ -2580,11 +2431,10 @@ async function importar(produtos) {
   return { criados, atualizados, erros };
 }
 
-// ---- Execução principal ----
 (async () => {
   const caminhoArquivo = path.join(__dirname, ARQUIVO_XLSX);
 
-  console.log(`\nCacau da Neta — Importador de Produtos`);
+  console.log("\nCacau da Neta - Importador de Produtos");
   console.log(`Arquivo: ${caminhoArquivo}\n`);
 
   let produtos;
@@ -2596,7 +2446,7 @@ async function importar(produtos) {
   }
 
   if (produtos.length === 0) {
-    console.log('Nenhum produto encontrado na planilha.');
+    console.log("Nenhum produto encontrado na planilha.");
     process.exit(0);
   }
 
@@ -2604,11 +2454,11 @@ async function importar(produtos) {
 
   const { criados, atualizados, erros } = await importar(produtos);
 
-  console.log(`\n─────────────────────────────`);
-  console.log(`  Criados:    ${criados}`);
+  console.log("\n-----------------------------");
+  console.log(`  Criados:     ${criados}`);
   console.log(`  Atualizados: ${atualizados}`);
-  console.log(`  Erros:      ${erros}`);
-  console.log(`─────────────────────────────\n`);
+  console.log(`  Erros:       ${erros}`);
+  console.log("-----------------------------\n");
 
   process.exit(erros > 0 ? 1 : 0);
 })();
@@ -2686,1594 +2536,60 @@ Runner/GeneratedPluginRegistrant.*
 #include "Generated.xcconfig"
 </file>
 
-<file path="ios/Podfile.lock">
-PODS:
-  - abseil/algorithm (1.20240722.0):
-    - abseil/algorithm/algorithm (= 1.20240722.0)
-    - abseil/algorithm/container (= 1.20240722.0)
-  - abseil/algorithm/algorithm (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/algorithm/container (1.20240722.0):
-    - abseil/algorithm/algorithm
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/nullability
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/base (1.20240722.0):
-    - abseil/base/atomic_hook (= 1.20240722.0)
-    - abseil/base/base (= 1.20240722.0)
-    - abseil/base/base_internal (= 1.20240722.0)
-    - abseil/base/config (= 1.20240722.0)
-    - abseil/base/core_headers (= 1.20240722.0)
-    - abseil/base/cycleclock_internal (= 1.20240722.0)
-    - abseil/base/dynamic_annotations (= 1.20240722.0)
-    - abseil/base/endian (= 1.20240722.0)
-    - abseil/base/errno_saver (= 1.20240722.0)
-    - abseil/base/fast_type_id (= 1.20240722.0)
-    - abseil/base/log_severity (= 1.20240722.0)
-    - abseil/base/malloc_internal (= 1.20240722.0)
-    - abseil/base/no_destructor (= 1.20240722.0)
-    - abseil/base/nullability (= 1.20240722.0)
-    - abseil/base/poison (= 1.20240722.0)
-    - abseil/base/prefetch (= 1.20240722.0)
-    - abseil/base/pretty_function (= 1.20240722.0)
-    - abseil/base/raw_logging_internal (= 1.20240722.0)
-    - abseil/base/spinlock_wait (= 1.20240722.0)
-    - abseil/base/strerror (= 1.20240722.0)
-    - abseil/base/throw_delegate (= 1.20240722.0)
-  - abseil/base/atomic_hook (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/xcprivacy
-  - abseil/base/base (1.20240722.0):
-    - abseil/base/atomic_hook
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/cycleclock_internal
-    - abseil/base/dynamic_annotations
-    - abseil/base/log_severity
-    - abseil/base/nullability
-    - abseil/base/raw_logging_internal
-    - abseil/base/spinlock_wait
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/base/base_internal (1.20240722.0):
-    - abseil/base/config
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/base/config (1.20240722.0):
-    - abseil/xcprivacy
-  - abseil/base/core_headers (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/base/cycleclock_internal (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/base/dynamic_annotations (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/xcprivacy
-  - abseil/base/endian (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/nullability
-    - abseil/xcprivacy
-  - abseil/base/errno_saver (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/base/fast_type_id (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/base/log_severity (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/xcprivacy
-  - abseil/base/malloc_internal (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/dynamic_annotations
-    - abseil/base/raw_logging_internal
-    - abseil/xcprivacy
-  - abseil/base/no_destructor (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/nullability
-    - abseil/xcprivacy
-  - abseil/base/nullability (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/base/poison (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/malloc_internal
-    - abseil/xcprivacy
-  - abseil/base/prefetch (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/xcprivacy
-  - abseil/base/pretty_function (1.20240722.0):
-    - abseil/xcprivacy
-  - abseil/base/raw_logging_internal (1.20240722.0):
-    - abseil/base/atomic_hook
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/errno_saver
-    - abseil/base/log_severity
-    - abseil/xcprivacy
-  - abseil/base/spinlock_wait (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/core_headers
-    - abseil/base/errno_saver
-    - abseil/xcprivacy
-  - abseil/base/strerror (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/errno_saver
-    - abseil/xcprivacy
-  - abseil/base/throw_delegate (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/raw_logging_internal
-    - abseil/xcprivacy
-  - abseil/cleanup/cleanup (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/cleanup/cleanup_internal
-    - abseil/xcprivacy
-  - abseil/cleanup/cleanup_internal (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/core_headers
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/container/common (1.20240722.0):
-    - abseil/meta/type_traits
-    - abseil/types/optional
-    - abseil/xcprivacy
-  - abseil/container/common_policy_traits (1.20240722.0):
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/container/compressed_tuple (1.20240722.0):
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/container/container_memory (1.20240722.0):
-    - abseil/base/config
-    - abseil/memory/memory
-    - abseil/meta/type_traits
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/container/fixed_array (1.20240722.0):
-    - abseil/algorithm/algorithm
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/dynamic_annotations
-    - abseil/base/throw_delegate
-    - abseil/container/compressed_tuple
-    - abseil/memory/memory
-    - abseil/xcprivacy
-  - abseil/container/flat_hash_map (1.20240722.0):
-    - abseil/algorithm/container
-    - abseil/base/core_headers
-    - abseil/container/container_memory
-    - abseil/container/hash_container_defaults
-    - abseil/container/raw_hash_map
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/container/flat_hash_set (1.20240722.0):
-    - abseil/algorithm/container
-    - abseil/base/core_headers
-    - abseil/container/container_memory
-    - abseil/container/hash_container_defaults
-    - abseil/container/raw_hash_set
-    - abseil/memory/memory
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/container/hash_container_defaults (1.20240722.0):
-    - abseil/base/config
-    - abseil/container/hash_function_defaults
-    - abseil/xcprivacy
-  - abseil/container/hash_function_defaults (1.20240722.0):
-    - abseil/base/config
-    - abseil/container/common
-    - abseil/hash/hash
-    - abseil/meta/type_traits
-    - abseil/strings/cord
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/container/hash_policy_traits (1.20240722.0):
-    - abseil/container/common_policy_traits
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/container/hashtable_debug_hooks (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/container/hashtablez_sampler (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/no_destructor
-    - abseil/base/raw_logging_internal
-    - abseil/debugging/stacktrace
-    - abseil/memory/memory
-    - abseil/profiling/exponential_biased
-    - abseil/profiling/sample_recorder
-    - abseil/synchronization/synchronization
-    - abseil/time/time
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/container/inlined_vector (1.20240722.0):
-    - abseil/algorithm/algorithm
-    - abseil/base/core_headers
-    - abseil/base/throw_delegate
-    - abseil/container/inlined_vector_internal
-    - abseil/memory/memory
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/container/inlined_vector_internal (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/container/compressed_tuple
-    - abseil/memory/memory
-    - abseil/meta/type_traits
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/container/layout (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/debugging/demangle_internal
-    - abseil/meta/type_traits
-    - abseil/strings/strings
-    - abseil/types/span
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/container/raw_hash_map (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/throw_delegate
-    - abseil/container/container_memory
-    - abseil/container/raw_hash_set
-    - abseil/xcprivacy
-  - abseil/container/raw_hash_set (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/dynamic_annotations
-    - abseil/base/endian
-    - abseil/base/prefetch
-    - abseil/base/raw_logging_internal
-    - abseil/container/common
-    - abseil/container/compressed_tuple
-    - abseil/container/container_memory
-    - abseil/container/hash_policy_traits
-    - abseil/container/hashtable_debug_hooks
-    - abseil/container/hashtablez_sampler
-    - abseil/hash/hash
-    - abseil/memory/memory
-    - abseil/meta/type_traits
-    - abseil/numeric/bits
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/crc/cpu_detect (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/crc/crc32c (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/base/prefetch
-    - abseil/crc/cpu_detect
-    - abseil/crc/crc_internal
-    - abseil/crc/non_temporal_memcpy
-    - abseil/strings/str_format
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/crc/crc_cord_state (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/no_destructor
-    - abseil/crc/crc32c
-    - abseil/numeric/bits
-    - abseil/xcprivacy
-  - abseil/crc/crc_internal (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/base/prefetch
-    - abseil/base/raw_logging_internal
-    - abseil/crc/cpu_detect
-    - abseil/memory/memory
-    - abseil/numeric/bits
-    - abseil/xcprivacy
-  - abseil/crc/non_temporal_arm_intrinsics (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/crc/non_temporal_memcpy (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/crc/non_temporal_arm_intrinsics
-    - abseil/xcprivacy
-  - abseil/debugging/bounded_utf8_length_sequence (1.20240722.0):
-    - abseil/base/config
-    - abseil/numeric/bits
-    - abseil/xcprivacy
-  - abseil/debugging/debugging_internal (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/dynamic_annotations
-    - abseil/base/errno_saver
-    - abseil/base/raw_logging_internal
-    - abseil/xcprivacy
-  - abseil/debugging/decode_rust_punycode (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/nullability
-    - abseil/debugging/bounded_utf8_length_sequence
-    - abseil/debugging/utf8_for_code_point
-    - abseil/xcprivacy
-  - abseil/debugging/demangle_internal (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/nullability
-    - abseil/debugging/demangle_rust
-    - abseil/numeric/bits
-    - abseil/xcprivacy
-  - abseil/debugging/demangle_rust (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/debugging/decode_rust_punycode
-    - abseil/xcprivacy
-  - abseil/debugging/examine_stack (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/raw_logging_internal
-    - abseil/debugging/stacktrace
-    - abseil/debugging/symbolize
-    - abseil/xcprivacy
-  - abseil/debugging/stacktrace (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/dynamic_annotations
-    - abseil/base/raw_logging_internal
-    - abseil/debugging/debugging_internal
-    - abseil/xcprivacy
-  - abseil/debugging/symbolize (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/dynamic_annotations
-    - abseil/base/malloc_internal
-    - abseil/base/raw_logging_internal
-    - abseil/debugging/debugging_internal
-    - abseil/debugging/demangle_internal
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/debugging/utf8_for_code_point (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/flags/commandlineflag (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/fast_type_id
-    - abseil/flags/commandlineflag_internal
-    - abseil/strings/strings
-    - abseil/types/optional
-    - abseil/xcprivacy
-  - abseil/flags/commandlineflag_internal (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/fast_type_id
-    - abseil/xcprivacy
-  - abseil/flags/config (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/flags/path_util
-    - abseil/flags/program_name
-    - abseil/strings/strings
-    - abseil/synchronization/synchronization
-    - abseil/xcprivacy
-  - abseil/flags/flag (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/flags/commandlineflag
-    - abseil/flags/config
-    - abseil/flags/flag_internal
-    - abseil/flags/reflection
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/flags/flag_internal (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/dynamic_annotations
-    - abseil/flags/commandlineflag
-    - abseil/flags/commandlineflag_internal
-    - abseil/flags/config
-    - abseil/flags/marshalling
-    - abseil/flags/reflection
-    - abseil/memory/memory
-    - abseil/meta/type_traits
-    - abseil/strings/strings
-    - abseil/synchronization/synchronization
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/flags/marshalling (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/log_severity
-    - abseil/numeric/int128
-    - abseil/strings/str_format
-    - abseil/strings/strings
-    - abseil/types/optional
-    - abseil/xcprivacy
-  - abseil/flags/path_util (1.20240722.0):
-    - abseil/base/config
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/flags/private_handle_accessor (1.20240722.0):
-    - abseil/base/config
-    - abseil/flags/commandlineflag
-    - abseil/flags/commandlineflag_internal
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/flags/program_name (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/flags/path_util
-    - abseil/strings/strings
-    - abseil/synchronization/synchronization
-    - abseil/xcprivacy
-  - abseil/flags/reflection (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/no_destructor
-    - abseil/container/flat_hash_map
-    - abseil/flags/commandlineflag
-    - abseil/flags/commandlineflag_internal
-    - abseil/flags/config
-    - abseil/flags/private_handle_accessor
-    - abseil/strings/strings
-    - abseil/synchronization/synchronization
-    - abseil/xcprivacy
-  - abseil/functional/any_invocable (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/meta/type_traits
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/functional/bind_front (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/container/compressed_tuple
-    - abseil/meta/type_traits
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/functional/function_ref (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/core_headers
-    - abseil/functional/any_invocable
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/hash/city (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/xcprivacy
-  - abseil/hash/hash (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/container/fixed_array
-    - abseil/functional/function_ref
-    - abseil/hash/city
-    - abseil/hash/low_level_hash
-    - abseil/meta/type_traits
-    - abseil/numeric/bits
-    - abseil/numeric/int128
-    - abseil/strings/strings
-    - abseil/types/optional
-    - abseil/types/variant
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/hash/low_level_hash (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/endian
-    - abseil/base/prefetch
-    - abseil/numeric/int128
-    - abseil/xcprivacy
-  - abseil/log/absl_check (1.20240722.0):
-    - abseil/log/internal/check_impl
-    - abseil/xcprivacy
-  - abseil/log/absl_log (1.20240722.0):
-    - abseil/log/internal/log_impl
-    - abseil/xcprivacy
-  - abseil/log/absl_vlog_is_on (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/log/internal/vlog_config
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/log/check (1.20240722.0):
-    - abseil/log/internal/check_impl
-    - abseil/log/internal/check_op
-    - abseil/log/internal/conditions
-    - abseil/log/internal/log_message
-    - abseil/log/internal/strip
-    - abseil/xcprivacy
-  - abseil/log/globals (1.20240722.0):
-    - abseil/base/atomic_hook
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/log_severity
-    - abseil/base/raw_logging_internal
-    - abseil/hash/hash
-    - abseil/log/internal/vlog_config
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/log/internal/append_truncated (1.20240722.0):
-    - abseil/base/config
-    - abseil/strings/strings
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/log/internal/check_impl (1.20240722.0):
-    - abseil/base/core_headers
-    - abseil/log/internal/check_op
-    - abseil/log/internal/conditions
-    - abseil/log/internal/log_message
-    - abseil/log/internal/strip
-    - abseil/xcprivacy
-  - abseil/log/internal/check_op (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/log/internal/nullguard
-    - abseil/log/internal/nullstream
-    - abseil/log/internal/strip
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/log/internal/conditions (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/log/internal/voidify
-    - abseil/xcprivacy
-  - abseil/log/internal/config (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/xcprivacy
-  - abseil/log/internal/fnmatch (1.20240722.0):
-    - abseil/base/config
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/log/internal/format (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/log_severity
-    - abseil/log/internal/append_truncated
-    - abseil/log/internal/config
-    - abseil/log/internal/globals
-    - abseil/strings/str_format
-    - abseil/strings/strings
-    - abseil/time/time
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/log/internal/globals (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/log_severity
-    - abseil/base/raw_logging_internal
-    - abseil/strings/strings
-    - abseil/time/time
-    - abseil/xcprivacy
-  - abseil/log/internal/log_impl (1.20240722.0):
-    - abseil/log/absl_vlog_is_on
-    - abseil/log/internal/conditions
-    - abseil/log/internal/log_message
-    - abseil/log/internal/strip
-    - abseil/xcprivacy
-  - abseil/log/internal/log_message (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/errno_saver
-    - abseil/base/log_severity
-    - abseil/base/raw_logging_internal
-    - abseil/base/strerror
-    - abseil/container/inlined_vector
-    - abseil/debugging/examine_stack
-    - abseil/log/globals
-    - abseil/log/internal/append_truncated
-    - abseil/log/internal/format
-    - abseil/log/internal/globals
-    - abseil/log/internal/log_sink_set
-    - abseil/log/internal/nullguard
-    - abseil/log/internal/proto
-    - abseil/log/log_entry
-    - abseil/log/log_sink
-    - abseil/log/log_sink_registry
-    - abseil/memory/memory
-    - abseil/strings/strings
-    - abseil/time/time
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/log/internal/log_sink_set (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/log_severity
-    - abseil/base/no_destructor
-    - abseil/base/raw_logging_internal
-    - abseil/cleanup/cleanup
-    - abseil/log/globals
-    - abseil/log/internal/config
-    - abseil/log/internal/globals
-    - abseil/log/log_entry
-    - abseil/log/log_sink
-    - abseil/strings/strings
-    - abseil/synchronization/synchronization
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/log/internal/nullguard (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/xcprivacy
-  - abseil/log/internal/nullstream (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/log_severity
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/log/internal/proto (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/strings/strings
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/log/internal/strip (1.20240722.0):
-    - abseil/base/core_headers
-    - abseil/base/log_severity
-    - abseil/log/internal/log_message
-    - abseil/log/internal/nullstream
-    - abseil/xcprivacy
-  - abseil/log/internal/vlog_config (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/no_destructor
-    - abseil/log/internal/fnmatch
-    - abseil/memory/memory
-    - abseil/strings/strings
-    - abseil/synchronization/synchronization
-    - abseil/types/optional
-    - abseil/xcprivacy
-  - abseil/log/internal/voidify (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/log/log (1.20240722.0):
-    - abseil/log/internal/log_impl
-    - abseil/log/vlog_is_on
-    - abseil/xcprivacy
-  - abseil/log/log_entry (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/log_severity
-    - abseil/log/internal/config
-    - abseil/strings/strings
-    - abseil/time/time
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/log/log_sink (1.20240722.0):
-    - abseil/base/config
-    - abseil/log/log_entry
-    - abseil/xcprivacy
-  - abseil/log/log_sink_registry (1.20240722.0):
-    - abseil/base/config
-    - abseil/log/internal/log_sink_set
-    - abseil/log/log_sink
-    - abseil/xcprivacy
-  - abseil/log/vlog_is_on (1.20240722.0):
-    - abseil/log/absl_vlog_is_on
-    - abseil/xcprivacy
-  - abseil/memory (1.20240722.0):
-    - abseil/memory/memory (= 1.20240722.0)
-  - abseil/memory/memory (1.20240722.0):
-    - abseil/base/core_headers
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/meta (1.20240722.0):
-    - abseil/meta/type_traits (= 1.20240722.0)
-  - abseil/meta/type_traits (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/xcprivacy
-  - abseil/numeric/bits (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/xcprivacy
-  - abseil/numeric/int128 (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/numeric/bits
-    - abseil/types/compare
-    - abseil/xcprivacy
-  - abseil/numeric/representation (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/profiling/exponential_biased (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/xcprivacy
-  - abseil/profiling/sample_recorder (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/synchronization/synchronization
-    - abseil/time/time
-    - abseil/xcprivacy
-  - abseil/random/bit_gen_ref (1.20240722.0):
-    - abseil/base/core_headers
-    - abseil/base/fast_type_id
-    - abseil/meta/type_traits
-    - abseil/random/internal/distribution_caller
-    - abseil/random/internal/fast_uniform_bits
-    - abseil/random/random
-    - abseil/xcprivacy
-  - abseil/random/distributions (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/meta/type_traits
-    - abseil/numeric/bits
-    - abseil/random/internal/distribution_caller
-    - abseil/random/internal/fast_uniform_bits
-    - abseil/random/internal/fastmath
-    - abseil/random/internal/generate_real
-    - abseil/random/internal/iostream_state_saver
-    - abseil/random/internal/traits
-    - abseil/random/internal/uniform_helper
-    - abseil/random/internal/wide_multiply
-    - abseil/strings/strings
-    - abseil/xcprivacy
-  - abseil/random/internal/distribution_caller (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/fast_type_id
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/random/internal/fast_uniform_bits (1.20240722.0):
-    - abseil/base/config
-    - abseil/meta/type_traits
-    - abseil/random/internal/traits
-    - abseil/xcprivacy
-  - abseil/random/internal/fastmath (1.20240722.0):
-    - abseil/numeric/bits
-    - abseil/xcprivacy
-  - abseil/random/internal/generate_real (1.20240722.0):
-    - abseil/meta/type_traits
-    - abseil/numeric/bits
-    - abseil/random/internal/fastmath
-    - abseil/random/internal/traits
-    - abseil/xcprivacy
-  - abseil/random/internal/iostream_state_saver (1.20240722.0):
-    - abseil/meta/type_traits
-    - abseil/numeric/int128
-    - abseil/xcprivacy
-  - abseil/random/internal/nonsecure_base (1.20240722.0):
-    - abseil/base/core_headers
-    - abseil/container/inlined_vector
-    - abseil/meta/type_traits
-    - abseil/random/internal/pool_urbg
-    - abseil/random/internal/salted_seed_seq
-    - abseil/random/internal/seed_material
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/random/internal/pcg_engine (1.20240722.0):
-    - abseil/base/config
-    - abseil/meta/type_traits
-    - abseil/numeric/bits
-    - abseil/numeric/int128
-    - abseil/random/internal/fastmath
-    - abseil/random/internal/iostream_state_saver
-    - abseil/xcprivacy
-  - abseil/random/internal/platform (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/random/internal/pool_urbg (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/base/raw_logging_internal
-    - abseil/random/internal/randen
-    - abseil/random/internal/seed_material
-    - abseil/random/internal/traits
-    - abseil/random/seed_gen_exception
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/random/internal/randen (1.20240722.0):
-    - abseil/base/raw_logging_internal
-    - abseil/random/internal/platform
-    - abseil/random/internal/randen_hwaes
-    - abseil/random/internal/randen_slow
-    - abseil/xcprivacy
-  - abseil/random/internal/randen_engine (1.20240722.0):
-    - abseil/base/endian
-    - abseil/meta/type_traits
-    - abseil/random/internal/iostream_state_saver
-    - abseil/random/internal/randen
-    - abseil/xcprivacy
-  - abseil/random/internal/randen_hwaes (1.20240722.0):
-    - abseil/base/config
-    - abseil/random/internal/platform
-    - abseil/random/internal/randen_hwaes_impl
-    - abseil/xcprivacy
-  - abseil/random/internal/randen_hwaes_impl (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/numeric/int128
-    - abseil/random/internal/platform
-    - abseil/xcprivacy
-  - abseil/random/internal/randen_slow (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/numeric/int128
-    - abseil/random/internal/platform
-    - abseil/xcprivacy
-  - abseil/random/internal/salted_seed_seq (1.20240722.0):
-    - abseil/container/inlined_vector
-    - abseil/meta/type_traits
-    - abseil/random/internal/seed_material
-    - abseil/types/optional
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/random/internal/seed_material (1.20240722.0):
-    - abseil/base/core_headers
-    - abseil/base/dynamic_annotations
-    - abseil/base/raw_logging_internal
-    - abseil/random/internal/fast_uniform_bits
-    - abseil/strings/strings
-    - abseil/types/optional
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/random/internal/traits (1.20240722.0):
-    - abseil/base/config
-    - abseil/numeric/bits
-    - abseil/numeric/int128
-    - abseil/xcprivacy
-  - abseil/random/internal/uniform_helper (1.20240722.0):
-    - abseil/base/config
-    - abseil/meta/type_traits
-    - abseil/random/internal/traits
-    - abseil/xcprivacy
-  - abseil/random/internal/wide_multiply (1.20240722.0):
-    - abseil/base/config
-    - abseil/numeric/bits
-    - abseil/numeric/int128
-    - abseil/random/internal/traits
-    - abseil/xcprivacy
-  - abseil/random/random (1.20240722.0):
-    - abseil/random/distributions
-    - abseil/random/internal/nonsecure_base
-    - abseil/random/internal/pcg_engine
-    - abseil/random/internal/pool_urbg
-    - abseil/random/internal/randen_engine
-    - abseil/random/seed_sequences
-    - abseil/xcprivacy
-  - abseil/random/seed_gen_exception (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/random/seed_sequences (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/nullability
-    - abseil/random/internal/pool_urbg
-    - abseil/random/internal/salted_seed_seq
-    - abseil/random/internal/seed_material
-    - abseil/random/seed_gen_exception
-    - abseil/strings/string_view
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/status/status (1.20240722.0):
-    - abseil/base/atomic_hook
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/no_destructor
-    - abseil/base/nullability
-    - abseil/base/raw_logging_internal
-    - abseil/base/strerror
-    - abseil/container/inlined_vector
-    - abseil/debugging/stacktrace
-    - abseil/debugging/symbolize
-    - abseil/functional/function_ref
-    - abseil/memory/memory
-    - abseil/strings/cord
-    - abseil/strings/str_format
-    - abseil/strings/strings
-    - abseil/types/optional
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/status/statusor (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/nullability
-    - abseil/base/raw_logging_internal
-    - abseil/meta/type_traits
-    - abseil/status/status
-    - abseil/strings/has_ostream_operator
-    - abseil/strings/str_format
-    - abseil/strings/strings
-    - abseil/types/variant
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/strings/charset (1.20240722.0):
-    - abseil/base/core_headers
-    - abseil/strings/string_view
-    - abseil/xcprivacy
-  - abseil/strings/cord (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/base/nullability
-    - abseil/base/raw_logging_internal
-    - abseil/container/inlined_vector
-    - abseil/crc/crc32c
-    - abseil/crc/crc_cord_state
-    - abseil/functional/function_ref
-    - abseil/meta/type_traits
-    - abseil/numeric/bits
-    - abseil/strings/cord_internal
-    - abseil/strings/cordz_functions
-    - abseil/strings/cordz_info
-    - abseil/strings/cordz_statistics
-    - abseil/strings/cordz_update_scope
-    - abseil/strings/cordz_update_tracker
-    - abseil/strings/internal
-    - abseil/strings/strings
-    - abseil/types/compare
-    - abseil/types/optional
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/strings/cord_internal (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/base/raw_logging_internal
-    - abseil/base/throw_delegate
-    - abseil/container/compressed_tuple
-    - abseil/container/container_memory
-    - abseil/container/inlined_vector
-    - abseil/container/layout
-    - abseil/crc/crc_cord_state
-    - abseil/functional/function_ref
-    - abseil/meta/type_traits
-    - abseil/strings/strings
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/strings/cordz_functions (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/raw_logging_internal
-    - abseil/profiling/exponential_biased
-    - abseil/xcprivacy
-  - abseil/strings/cordz_handle (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/no_destructor
-    - abseil/base/raw_logging_internal
-    - abseil/synchronization/synchronization
-    - abseil/xcprivacy
-  - abseil/strings/cordz_info (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/raw_logging_internal
-    - abseil/container/inlined_vector
-    - abseil/debugging/stacktrace
-    - abseil/strings/cord_internal
-    - abseil/strings/cordz_functions
-    - abseil/strings/cordz_handle
-    - abseil/strings/cordz_statistics
-    - abseil/strings/cordz_update_tracker
-    - abseil/synchronization/synchronization
-    - abseil/time/time
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/strings/cordz_statistics (1.20240722.0):
-    - abseil/base/config
-    - abseil/strings/cordz_update_tracker
-    - abseil/xcprivacy
-  - abseil/strings/cordz_update_scope (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/strings/cord_internal
-    - abseil/strings/cordz_info
-    - abseil/strings/cordz_update_tracker
-    - abseil/xcprivacy
-  - abseil/strings/cordz_update_tracker (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/strings/has_ostream_operator (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/strings/internal (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/base/raw_logging_internal
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/strings/str_format (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/nullability
-    - abseil/strings/str_format_internal
-    - abseil/strings/string_view
-    - abseil/types/span
-    - abseil/xcprivacy
-  - abseil/strings/str_format_internal (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/container/fixed_array
-    - abseil/container/inlined_vector
-    - abseil/functional/function_ref
-    - abseil/meta/type_traits
-    - abseil/numeric/bits
-    - abseil/numeric/int128
-    - abseil/numeric/representation
-    - abseil/strings/strings
-    - abseil/types/optional
-    - abseil/types/span
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/strings/string_view (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/nullability
-    - abseil/base/throw_delegate
-    - abseil/xcprivacy
-  - abseil/strings/strings (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/endian
-    - abseil/base/nullability
-    - abseil/base/raw_logging_internal
-    - abseil/base/throw_delegate
-    - abseil/memory/memory
-    - abseil/meta/type_traits
-    - abseil/numeric/bits
-    - abseil/numeric/int128
-    - abseil/strings/charset
-    - abseil/strings/internal
-    - abseil/strings/string_view
-    - abseil/xcprivacy
-  - abseil/synchronization/graphcycles_internal (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/malloc_internal
-    - abseil/base/raw_logging_internal
-    - abseil/xcprivacy
-  - abseil/synchronization/kernel_timeout_internal (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/raw_logging_internal
-    - abseil/time/time
-    - abseil/xcprivacy
-  - abseil/synchronization/synchronization (1.20240722.0):
-    - abseil/base/atomic_hook
-    - abseil/base/base
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/dynamic_annotations
-    - abseil/base/malloc_internal
-    - abseil/base/raw_logging_internal
-    - abseil/debugging/stacktrace
-    - abseil/debugging/symbolize
-    - abseil/synchronization/graphcycles_internal
-    - abseil/synchronization/kernel_timeout_internal
-    - abseil/time/time
-    - abseil/xcprivacy
-  - abseil/time (1.20240722.0):
-    - abseil/time/internal (= 1.20240722.0)
-    - abseil/time/time (= 1.20240722.0)
-  - abseil/time/internal (1.20240722.0):
-    - abseil/time/internal/cctz (= 1.20240722.0)
-  - abseil/time/internal/cctz (1.20240722.0):
-    - abseil/time/internal/cctz/civil_time (= 1.20240722.0)
-    - abseil/time/internal/cctz/time_zone (= 1.20240722.0)
-  - abseil/time/internal/cctz/civil_time (1.20240722.0):
-    - abseil/base/config
-    - abseil/xcprivacy
-  - abseil/time/internal/cctz/time_zone (1.20240722.0):
-    - abseil/base/config
-    - abseil/time/internal/cctz/civil_time
-    - abseil/xcprivacy
-  - abseil/time/time (1.20240722.0):
-    - abseil/base/base
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/raw_logging_internal
-    - abseil/numeric/int128
-    - abseil/strings/strings
-    - abseil/time/internal/cctz/civil_time
-    - abseil/time/internal/cctz/time_zone
-    - abseil/types/optional
-    - abseil/xcprivacy
-  - abseil/types (1.20240722.0):
-    - abseil/types/any (= 1.20240722.0)
-    - abseil/types/bad_any_cast (= 1.20240722.0)
-    - abseil/types/bad_any_cast_impl (= 1.20240722.0)
-    - abseil/types/bad_optional_access (= 1.20240722.0)
-    - abseil/types/bad_variant_access (= 1.20240722.0)
-    - abseil/types/compare (= 1.20240722.0)
-    - abseil/types/optional (= 1.20240722.0)
-    - abseil/types/span (= 1.20240722.0)
-    - abseil/types/variant (= 1.20240722.0)
-  - abseil/types/any (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/fast_type_id
-    - abseil/meta/type_traits
-    - abseil/types/bad_any_cast
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/types/bad_any_cast (1.20240722.0):
-    - abseil/base/config
-    - abseil/types/bad_any_cast_impl
-    - abseil/xcprivacy
-  - abseil/types/bad_any_cast_impl (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/raw_logging_internal
-    - abseil/xcprivacy
-  - abseil/types/bad_optional_access (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/raw_logging_internal
-    - abseil/xcprivacy
-  - abseil/types/bad_variant_access (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/raw_logging_internal
-    - abseil/xcprivacy
-  - abseil/types/compare (1.20240722.0):
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/types/optional (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/base/nullability
-    - abseil/memory/memory
-    - abseil/meta/type_traits
-    - abseil/types/bad_optional_access
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/types/span (1.20240722.0):
-    - abseil/algorithm/algorithm
-    - abseil/base/core_headers
-    - abseil/base/nullability
-    - abseil/base/throw_delegate
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/types/variant (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/base/core_headers
-    - abseil/meta/type_traits
-    - abseil/types/bad_variant_access
-    - abseil/utility/utility
-    - abseil/xcprivacy
-  - abseil/utility/utility (1.20240722.0):
-    - abseil/base/base_internal
-    - abseil/base/config
-    - abseil/meta/type_traits
-    - abseil/xcprivacy
-  - abseil/xcprivacy (1.20240722.0)
-  - BoringSSL-GRPC (0.0.37):
-    - BoringSSL-GRPC/Implementation (= 0.0.37)
-    - BoringSSL-GRPC/Interface (= 0.0.37)
-  - BoringSSL-GRPC/Implementation (0.0.37):
-    - BoringSSL-GRPC/Interface (= 0.0.37)
-  - BoringSSL-GRPC/Interface (0.0.37)
-  - cloud_firestore (6.1.2):
-    - Firebase/Firestore (= 12.8.0)
-    - firebase_core
-    - Flutter
-  - connectivity_plus (0.0.1):
-    - Flutter
-  - Firebase/Auth (12.8.0):
-    - Firebase/CoreOnly
-    - FirebaseAuth (~> 12.8.0)
-  - Firebase/CoreOnly (12.8.0):
-    - FirebaseCore (~> 12.8.0)
-  - Firebase/Firestore (12.8.0):
-    - Firebase/CoreOnly
-    - FirebaseFirestore (~> 12.8.0)
-  - Firebase/Storage (12.8.0):
-    - Firebase/CoreOnly
-    - FirebaseStorage (~> 12.8.0)
-  - firebase_auth (6.1.4):
-    - Firebase/Auth (= 12.8.0)
-    - firebase_core
-    - Flutter
-  - firebase_core (4.4.0):
-    - Firebase/CoreOnly (= 12.8.0)
-    - Flutter
-  - firebase_storage (13.0.6):
-    - Firebase/Storage (= 12.8.0)
-    - firebase_core
-    - Flutter
-  - FirebaseAppCheckInterop (12.8.0)
-  - FirebaseAuth (12.8.0):
-    - FirebaseAppCheckInterop (~> 12.8.0)
-    - FirebaseAuthInterop (~> 12.8.0)
-    - FirebaseCore (~> 12.8.0)
-    - FirebaseCoreExtension (~> 12.8.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 8.1)
-    - GoogleUtilities/Environment (~> 8.1)
-    - GTMSessionFetcher/Core (< 6.0, >= 3.4)
-    - RecaptchaInterop (~> 101.0)
-  - FirebaseAuthInterop (12.8.0)
-  - FirebaseCore (12.8.0):
-    - FirebaseCoreInternal (~> 12.8.0)
-    - GoogleUtilities/Environment (~> 8.1)
-    - GoogleUtilities/Logger (~> 8.1)
-  - FirebaseCoreExtension (12.8.0):
-    - FirebaseCore (~> 12.8.0)
-  - FirebaseCoreInternal (12.8.0):
-    - "GoogleUtilities/NSData+zlib (~> 8.1)"
-  - FirebaseFirestore (12.8.0):
-    - FirebaseCore (~> 12.8.0)
-    - FirebaseCoreExtension (~> 12.8.0)
-    - FirebaseFirestoreInternal (~> 12.8.0)
-    - FirebaseSharedSwift (~> 12.8.0)
-  - FirebaseFirestoreInternal (12.8.0):
-    - abseil/algorithm (~> 1.20240722.0)
-    - abseil/base (~> 1.20240722.0)
-    - abseil/container/flat_hash_map (~> 1.20240722.0)
-    - abseil/memory (~> 1.20240722.0)
-    - abseil/meta (~> 1.20240722.0)
-    - abseil/strings/strings (~> 1.20240722.0)
-    - abseil/time (~> 1.20240722.0)
-    - abseil/types (~> 1.20240722.0)
-    - FirebaseAppCheckInterop (~> 12.8.0)
-    - FirebaseCore (~> 12.8.0)
-    - "gRPC-C++ (~> 1.69.0)"
-    - gRPC-Core (~> 1.69.0)
-    - leveldb-library (~> 1.22)
-    - nanopb (~> 3.30910.0)
-  - FirebaseSharedSwift (12.8.0)
-  - FirebaseStorage (12.8.0):
-    - FirebaseAppCheckInterop (~> 12.8.0)
-    - FirebaseAuthInterop (~> 12.8.0)
-    - FirebaseCore (~> 12.8.0)
-    - FirebaseCoreExtension (~> 12.8.0)
-    - GoogleUtilities/Environment (~> 8.1)
-    - GTMSessionFetcher/Core (< 6.0, >= 3.4)
-  - Flutter (1.0.0)
-  - geocoding_ios (1.0.5):
-    - Flutter
-  - geolocator_apple (1.2.0):
-    - Flutter
-    - FlutterMacOS
-  - google_mlkit_commons (0.11.1):
-    - Flutter
-    - MLKitVision (~> 10.0.0)
-  - google_mlkit_text_recognition (0.15.1):
-    - Flutter
-    - google_mlkit_commons
-    - GoogleMLKit/TextRecognition (~> 9.0.0)
-  - GoogleDataTransport (10.1.0):
-    - nanopb (~> 3.30910.0)
-    - PromisesObjC (~> 2.4)
-  - GoogleMLKit/MLKitCore (9.0.0):
-    - MLKitCommon (~> 14.0.0)
-  - GoogleMLKit/TextRecognition (9.0.0):
-    - GoogleMLKit/MLKitCore
-    - MLKitTextRecognition (~> 7.0.0)
-  - GoogleToolboxForMac/Defines (4.2.1)
-  - GoogleToolboxForMac/Logger (4.2.1):
-    - GoogleToolboxForMac/Defines (= 4.2.1)
-  - "GoogleToolboxForMac/NSData+zlib (4.2.1)":
-    - GoogleToolboxForMac/Defines (= 4.2.1)
-  - GoogleUtilities/AppDelegateSwizzler (8.1.0):
-    - GoogleUtilities/Environment
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Network
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Environment (8.1.0):
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Logger (8.1.0):
-    - GoogleUtilities/Environment
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Network (8.1.0):
-    - GoogleUtilities/Logger
-    - "GoogleUtilities/NSData+zlib"
-    - GoogleUtilities/Privacy
-    - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (8.1.0)":
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (8.1.0)
-  - GoogleUtilities/Reachability (8.1.0):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/UserDefaults (8.1.0):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - "gRPC-C++ (1.69.0)":
-    - "gRPC-C++/Implementation (= 1.69.0)"
-    - "gRPC-C++/Interface (= 1.69.0)"
-  - "gRPC-C++/Implementation (1.69.0)":
-    - abseil/algorithm/container (~> 1.20240722.0)
-    - abseil/base/base (~> 1.20240722.0)
-    - abseil/base/config (~> 1.20240722.0)
-    - abseil/base/core_headers (~> 1.20240722.0)
-    - abseil/base/log_severity (~> 1.20240722.0)
-    - abseil/base/no_destructor (~> 1.20240722.0)
-    - abseil/cleanup/cleanup (~> 1.20240722.0)
-    - abseil/container/flat_hash_map (~> 1.20240722.0)
-    - abseil/container/flat_hash_set (~> 1.20240722.0)
-    - abseil/container/inlined_vector (~> 1.20240722.0)
-    - abseil/flags/flag (~> 1.20240722.0)
-    - abseil/flags/marshalling (~> 1.20240722.0)
-    - abseil/functional/any_invocable (~> 1.20240722.0)
-    - abseil/functional/bind_front (~> 1.20240722.0)
-    - abseil/functional/function_ref (~> 1.20240722.0)
-    - abseil/hash/hash (~> 1.20240722.0)
-    - abseil/log/absl_check (~> 1.20240722.0)
-    - abseil/log/absl_log (~> 1.20240722.0)
-    - abseil/log/check (~> 1.20240722.0)
-    - abseil/log/globals (~> 1.20240722.0)
-    - abseil/log/log (~> 1.20240722.0)
-    - abseil/memory/memory (~> 1.20240722.0)
-    - abseil/meta/type_traits (~> 1.20240722.0)
-    - abseil/numeric/bits (~> 1.20240722.0)
-    - abseil/random/bit_gen_ref (~> 1.20240722.0)
-    - abseil/random/distributions (~> 1.20240722.0)
-    - abseil/random/random (~> 1.20240722.0)
-    - abseil/status/status (~> 1.20240722.0)
-    - abseil/status/statusor (~> 1.20240722.0)
-    - abseil/strings/cord (~> 1.20240722.0)
-    - abseil/strings/str_format (~> 1.20240722.0)
-    - abseil/strings/strings (~> 1.20240722.0)
-    - abseil/synchronization/synchronization (~> 1.20240722.0)
-    - abseil/time/time (~> 1.20240722.0)
-    - abseil/types/optional (~> 1.20240722.0)
-    - abseil/types/span (~> 1.20240722.0)
-    - abseil/types/variant (~> 1.20240722.0)
-    - abseil/utility/utility (~> 1.20240722.0)
-    - "gRPC-C++/Interface (= 1.69.0)"
-    - "gRPC-C++/Privacy (= 1.69.0)"
-    - gRPC-Core (= 1.69.0)
-  - "gRPC-C++/Interface (1.69.0)"
-  - "gRPC-C++/Privacy (1.69.0)"
-  - gRPC-Core (1.69.0):
-    - gRPC-Core/Implementation (= 1.69.0)
-    - gRPC-Core/Interface (= 1.69.0)
-  - gRPC-Core/Implementation (1.69.0):
-    - abseil/algorithm/container (~> 1.20240722.0)
-    - abseil/base/base (~> 1.20240722.0)
-    - abseil/base/config (~> 1.20240722.0)
-    - abseil/base/core_headers (~> 1.20240722.0)
-    - abseil/base/log_severity (~> 1.20240722.0)
-    - abseil/base/no_destructor (~> 1.20240722.0)
-    - abseil/cleanup/cleanup (~> 1.20240722.0)
-    - abseil/container/flat_hash_map (~> 1.20240722.0)
-    - abseil/container/flat_hash_set (~> 1.20240722.0)
-    - abseil/container/inlined_vector (~> 1.20240722.0)
-    - abseil/flags/flag (~> 1.20240722.0)
-    - abseil/flags/marshalling (~> 1.20240722.0)
-    - abseil/functional/any_invocable (~> 1.20240722.0)
-    - abseil/functional/bind_front (~> 1.20240722.0)
-    - abseil/functional/function_ref (~> 1.20240722.0)
-    - abseil/hash/hash (~> 1.20240722.0)
-    - abseil/log/check (~> 1.20240722.0)
-    - abseil/log/globals (~> 1.20240722.0)
-    - abseil/log/log (~> 1.20240722.0)
-    - abseil/memory/memory (~> 1.20240722.0)
-    - abseil/meta/type_traits (~> 1.20240722.0)
-    - abseil/numeric/bits (~> 1.20240722.0)
-    - abseil/random/bit_gen_ref (~> 1.20240722.0)
-    - abseil/random/distributions (~> 1.20240722.0)
-    - abseil/random/random (~> 1.20240722.0)
-    - abseil/status/status (~> 1.20240722.0)
-    - abseil/status/statusor (~> 1.20240722.0)
-    - abseil/strings/cord (~> 1.20240722.0)
-    - abseil/strings/str_format (~> 1.20240722.0)
-    - abseil/strings/strings (~> 1.20240722.0)
-    - abseil/synchronization/synchronization (~> 1.20240722.0)
-    - abseil/time/time (~> 1.20240722.0)
-    - abseil/types/optional (~> 1.20240722.0)
-    - abseil/types/span (~> 1.20240722.0)
-    - abseil/types/variant (~> 1.20240722.0)
-    - abseil/utility/utility (~> 1.20240722.0)
-    - BoringSSL-GRPC (= 0.0.37)
-    - gRPC-Core/Interface (= 1.69.0)
-    - gRPC-Core/Privacy (= 1.69.0)
-  - gRPC-Core/Interface (1.69.0)
-  - gRPC-Core/Privacy (1.69.0)
-  - GTMSessionFetcher/Core (3.5.0)
-  - image_picker_ios (0.0.1):
-    - Flutter
-  - leveldb-library (1.22.6)
-  - MLImage (1.0.0-beta8)
-  - MLKitCommon (14.0.0):
-    - GoogleDataTransport (~> 10.0)
-    - GoogleToolboxForMac/Logger (< 5.0, >= 4.2.1)
-    - "GoogleToolboxForMac/NSData+zlib (< 5.0, >= 4.2.1)"
-    - GoogleUtilities/Logger (~> 8.0)
-    - GoogleUtilities/UserDefaults (~> 8.0)
-    - GTMSessionFetcher/Core (< 4.0, >= 3.3.2)
-  - MLKitTextRecognition (7.0.0):
-    - MLKitCommon (~> 14.0)
-    - MLKitTextRecognitionCommon (= 6.0.0)
-    - MLKitVision (~> 10.0)
-  - MLKitTextRecognitionCommon (6.0.0):
-    - MLKitCommon (~> 14.0)
-    - MLKitVision (~> 10.0)
-  - MLKitVision (10.0.0):
-    - GoogleToolboxForMac/Logger (< 5.0, >= 4.2.1)
-    - "GoogleToolboxForMac/NSData+zlib (< 5.0, >= 4.2.1)"
-    - GTMSessionFetcher/Core (< 4.0, >= 3.3.2)
-    - MLImage (= 1.0.0-beta8)
-    - MLKitCommon (~> 14.0)
-  - mobile_scanner (7.0.0):
-    - Flutter
-    - FlutterMacOS
-  - nanopb (3.30910.0):
-    - nanopb/decode (= 3.30910.0)
-    - nanopb/encode (= 3.30910.0)
-  - nanopb/decode (3.30910.0)
-  - nanopb/encode (3.30910.0)
-  - package_info_plus (0.4.5):
-    - Flutter
-  - PromisesObjC (2.4.0)
-  - RecaptchaInterop (101.0.0)
-  - shared_preferences_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - webview_flutter_wkwebview (0.0.1):
-    - Flutter
-    - FlutterMacOS
+<file path="ios/Podfile">
+platform :ios, '15.5'
 
-DEPENDENCIES:
-  - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
-  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
-  - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
-  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
-  - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
-  - Flutter (from `Flutter`)
-  - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
-  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
-  - google_mlkit_commons (from `.symlinks/plugins/google_mlkit_commons/ios`)
-  - google_mlkit_text_recognition (from `.symlinks/plugins/google_mlkit_text_recognition/ios`)
-  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
-  - mobile_scanner (from `.symlinks/plugins/mobile_scanner/darwin`)
-  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
-SPEC REPOS:
-  trunk:
-    - abseil
-    - BoringSSL-GRPC
-    - Firebase
-    - FirebaseAppCheckInterop
-    - FirebaseAuth
-    - FirebaseAuthInterop
-    - FirebaseCore
-    - FirebaseCoreExtension
-    - FirebaseCoreInternal
-    - FirebaseFirestore
-    - FirebaseFirestoreInternal
-    - FirebaseSharedSwift
-    - FirebaseStorage
-    - GoogleDataTransport
-    - GoogleMLKit
-    - GoogleToolboxForMac
-    - GoogleUtilities
-    - "gRPC-C++"
-    - gRPC-Core
-    - GTMSessionFetcher
-    - leveldb-library
-    - MLImage
-    - MLKitCommon
-    - MLKitTextRecognition
-    - MLKitTextRecognitionCommon
-    - MLKitVision
-    - nanopb
-    - PromisesObjC
-    - RecaptchaInterop
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
 
-EXTERNAL SOURCES:
-  cloud_firestore:
-    :path: ".symlinks/plugins/cloud_firestore/ios"
-  connectivity_plus:
-    :path: ".symlinks/plugins/connectivity_plus/ios"
-  firebase_auth:
-    :path: ".symlinks/plugins/firebase_auth/ios"
-  firebase_core:
-    :path: ".symlinks/plugins/firebase_core/ios"
-  firebase_storage:
-    :path: ".symlinks/plugins/firebase_storage/ios"
-  Flutter:
-    :path: Flutter
-  geocoding_ios:
-    :path: ".symlinks/plugins/geocoding_ios/ios"
-  geolocator_apple:
-    :path: ".symlinks/plugins/geolocator_apple/darwin"
-  google_mlkit_commons:
-    :path: ".symlinks/plugins/google_mlkit_commons/ios"
-  google_mlkit_text_recognition:
-    :path: ".symlinks/plugins/google_mlkit_text_recognition/ios"
-  image_picker_ios:
-    :path: ".symlinks/plugins/image_picker_ios/ios"
-  mobile_scanner:
-    :path: ".symlinks/plugins/mobile_scanner/darwin"
-  package_info_plus:
-    :path: ".symlinks/plugins/package_info_plus/ios"
-  shared_preferences_foundation:
-    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
-  webview_flutter_wkwebview:
-    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(
+    File.join('..', 'Flutter', 'Generated.xcconfig'),
+    __FILE__,
+  )
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. Run flutter pub get first."
+  end
 
-SPEC CHECKSUMS:
-  abseil: a05cc83bf02079535e17169a73c5be5ba47f714b
-  BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
-  cloud_firestore: d12568452e8283063a2c849d00a49fdbf240dffc
-  connectivity_plus: 2a701ffec2c0ae28a48cf7540e279787e77c447d
-  Firebase: 9a58fdbc9d8655ed7b79a19cf9690bb007d3d46d
-  firebase_auth: e7aec07fcada64e296cf237a61df9660e52842c2
-  firebase_core: 8d5e24676350f15dd111aa59a88a1ae26605f9ba
-  firebase_storage: f68af7703a067cd0ff1c37ec058ba8aa71948113
-  FirebaseAppCheckInterop: ba3dc604a89815379e61ec2365101608d365cf7d
-  FirebaseAuth: 4c289b1a43f5955283244a55cf6bd616de344be5
-  FirebaseAuthInterop: 95363fe96493cb4f106656666a0768b420cba090
-  FirebaseCore: 0dbad74bda10b8fb9ca34ad8f375fb9dd3ebef7c
-  FirebaseCoreExtension: 6605938d51f765d8b18bfcafd2085276a252bee2
-  FirebaseCoreInternal: fe5fa466aeb314787093a7dce9f0beeaad5a2a21
-  FirebaseFirestore: 67f23000ca238ccbab79127ed59636a9a2689e74
-  FirebaseFirestoreInternal: a0e7382af3d208898dcd1d4d52d8a7870632e881
-  FirebaseSharedSwift: f57ed48f4542b2d7eb4738f4f23ba443f78b3780
-  FirebaseStorage: 7c37558dc72731aa5f0a1a2401d8c6de10a513f5
-  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  geocoding_ios: eafacae6ad11a1eb56681f7d11df602a5fd49416
-  geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
-  google_mlkit_commons: 1e6ef6605d7281f35baf2b355e6049b9984fd624
-  google_mlkit_text_recognition: 309a3a493765ea17c7368cadb4a710391e73902c
-  GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
-  GoogleMLKit: b1eee21a41c57704fe72483b15c85cb2c0cd7444
-  GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
-  GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
-  "gRPC-C++": cc207623316fb041a7a3e774c252cf68a058b9e8
-  gRPC-Core: 860978b7db482de8b4f5e10677216309b5ff6330
-  GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  image_picker_ios: 4f2f91b01abdb52842a8e277617df877e40f905b
-  leveldb-library: cc8b8f8e013647a295ad3f8cd2ddf49a6f19be19
-  MLImage: 0de5c6c2bf9e93b80ef752e2797f0836f03b58c0
-  MLKitCommon: 47d47b50a031d00db62f1b0efe5a1d8b09a3b2e6
-  MLKitTextRecognition: c0ad24510481dfc8893ad15dfcb8a5f05ed9e826
-  MLKitTextRecognitionCommon: 234ceb1cfdfb5fceb4fd664943046609a2961cc2
-  MLKitVision: 39a5a812db83c4a0794445088e567f3631c11961
-  mobile_scanner: 77265f3dc8d580810e91849d4a0811a90467ed5e
-  nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
-  PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
-  shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
-  webview_flutter_wkwebview: 29eb20d43355b48fe7d07113835b9128f84e3af4
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise 'FLUTTER_ROOT not found in Generated.xcconfig. Run flutter pub get first.'
+end
 
-PODFILE CHECKSUM: 749581ad73eeb0d53e2476877838c7c5dbff4d23
+require File.expand_path(
+  File.join('packages', 'flutter_tools', 'bin', 'podhelper'),
+  flutter_root,
+)
 
-COCOAPODS: 1.16.2
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
+    end
+  end
+end
 </file>
 
 <file path="ios/Runner.xcodeproj/project.pbxproj">
@@ -4629,7 +2945,7 @@ COCOAPODS: 1.16.2
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -4644,6 +2960,7 @@ COCOAPODS: 1.16.2
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -4651,8 +2968,8 @@ COCOAPODS: 1.16.2
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.petjoy.app;
-				PRODUCT_NAME = "com.petjoy.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cacau.daneta;
+				PRODUCT_NAME = "com.cacau.daneta";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4667,8 +2984,8 @@ COCOAPODS: 1.16.2
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.petjoy.app;
-				PRODUCT_NAME = "com.petjoy.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cacau.daneta.RunnerTests;
+				PRODUCT_NAME = "com.cacau.daneta";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -4684,8 +3001,8 @@ COCOAPODS: 1.16.2
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.petjoy.app;
-				PRODUCT_NAME = "com.petjoy.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cacau.daneta.RunnerTests;
+				PRODUCT_NAME = "com.cacau.daneta";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
 			};
@@ -4699,8 +3016,8 @@ COCOAPODS: 1.16.2
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.petjoy.app;
-				PRODUCT_NAME = "com.petjoy.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cacau.daneta.RunnerTests;
+				PRODUCT_NAME = "com.cacau.daneta";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
 			};
@@ -4755,7 +3072,7 @@ COCOAPODS: 1.16.2
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -4806,7 +3123,7 @@ COCOAPODS: 1.16.2
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -4823,6 +3140,7 @@ COCOAPODS: 1.16.2
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -4830,8 +3148,8 @@ COCOAPODS: 1.16.2
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.petjoy.app;
-				PRODUCT_NAME = "com.petjoy.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cacau.daneta;
+				PRODUCT_NAME = "com.cacau.daneta";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -4845,6 +3163,7 @@ COCOAPODS: 1.16.2
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -4852,8 +3171,8 @@ COCOAPODS: 1.16.2
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.petjoy.app;
-				PRODUCT_NAME = "com.petjoy.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cacau.daneta;
+				PRODUCT_NAME = "com.cacau.daneta";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -5067,25 +3386,6 @@ COCOAPODS: 1.16.2
 </plist>
 </file>
 
-<file path="ios/Runner/AppDelegate.swift">
-import Flutter
-import UIKit
-
-@main
-@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
-  override func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-  ) -> Bool {
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-
-  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
-    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
-  }
-}
-</file>
-
 <file path="ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json">
 {"images":[{"size":"20x20","idiom":"iphone","filename":"Icon-App-20x20@2x.png","scale":"2x"},{"size":"20x20","idiom":"iphone","filename":"Icon-App-20x20@3x.png","scale":"3x"},{"size":"29x29","idiom":"iphone","filename":"Icon-App-29x29@1x.png","scale":"1x"},{"size":"29x29","idiom":"iphone","filename":"Icon-App-29x29@2x.png","scale":"2x"},{"size":"29x29","idiom":"iphone","filename":"Icon-App-29x29@3x.png","scale":"3x"},{"size":"40x40","idiom":"iphone","filename":"Icon-App-40x40@2x.png","scale":"2x"},{"size":"40x40","idiom":"iphone","filename":"Icon-App-40x40@3x.png","scale":"3x"},{"size":"57x57","idiom":"iphone","filename":"Icon-App-57x57@1x.png","scale":"1x"},{"size":"57x57","idiom":"iphone","filename":"Icon-App-57x57@2x.png","scale":"2x"},{"size":"60x60","idiom":"iphone","filename":"Icon-App-60x60@2x.png","scale":"2x"},{"size":"60x60","idiom":"iphone","filename":"Icon-App-60x60@3x.png","scale":"3x"},{"size":"20x20","idiom":"ipad","filename":"Icon-App-20x20@1x.png","scale":"1x"},{"size":"20x20","idiom":"ipad","filename":"Icon-App-20x20@2x.png","scale":"2x"},{"size":"29x29","idiom":"ipad","filename":"Icon-App-29x29@1x.png","scale":"1x"},{"size":"29x29","idiom":"ipad","filename":"Icon-App-29x29@2x.png","scale":"2x"},{"size":"40x40","idiom":"ipad","filename":"Icon-App-40x40@1x.png","scale":"1x"},{"size":"40x40","idiom":"ipad","filename":"Icon-App-40x40@2x.png","scale":"2x"},{"size":"50x50","idiom":"ipad","filename":"Icon-App-50x50@1x.png","scale":"1x"},{"size":"50x50","idiom":"ipad","filename":"Icon-App-50x50@2x.png","scale":"2x"},{"size":"72x72","idiom":"ipad","filename":"Icon-App-72x72@1x.png","scale":"1x"},{"size":"72x72","idiom":"ipad","filename":"Icon-App-72x72@2x.png","scale":"2x"},{"size":"76x76","idiom":"ipad","filename":"Icon-App-76x76@1x.png","scale":"1x"},{"size":"76x76","idiom":"ipad","filename":"Icon-App-76x76@2x.png","scale":"2x"},{"size":"83.5x83.5","idiom":"ipad","filename":"Icon-App-83.5x83.5@2x.png","scale":"2x"},{"size":"1024x1024","idiom":"ios-marketing","filename":"Icon-App-1024x1024@1x.png","scale":"1x"}],"info":{"version":1,"author":"xcode"}}
 </file>
@@ -5199,23 +3499,21 @@ You can also do it by opening your Flutter project's Xcode project with `open io
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>832723228892-sm1pa66vb4nsvt2odpmi27t76m5kv5ij.apps.googleusercontent.com</string>
+	<string>594909165569-5km60h0hgg61su3ar2p7efd0ouqcjst5.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.832723228892-sm1pa66vb4nsvt2odpmi27t76m5kv5ij</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>832723228892-jvq3f1ir8cqjs6backg3ju8bh46j0g6t.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.594909165569-5km60h0hgg61su3ar2p7efd0ouqcjst5</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCQGOs2MPIbkK3N6tWzgQSrp9ia146Sst4</string>
+	<string>AIzaSyBXx3V2Ai8f--lxakiI0HdTf9pIhT2aRko</string>
 	<key>GCM_SENDER_ID</key>
-	<string>832723228892</string>
+	<string>594909165569</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.petjoy.app</string>
+	<string>com.cacau.daneta</string>
 	<key>PROJECT_ID</key>
-	<string>petjoyapp-fac7f</string>
+	<string>cacau-da-neta</string>
 	<key>STORAGE_BUCKET</key>
-	<string>petjoyapp-fac7f.firebasestorage.app</string>
+	<string>cacau-da-neta.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -5227,7 +3525,7 @@ You can also do it by opening your Flutter project's Xcode project with `open io
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:832723228892:ios:4c9a3d88b8e0e79c917c19</string>
+	<string>1:594909165569:ios:5e8d2ecfc4bf19c2b7a800</string>
 </dict>
 </plist>
 </file>
@@ -5242,7 +3540,7 @@ You can also do it by opening your Flutter project's Xcode project with `open io
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Petjoy App</string>
+	<string>Cacau da Neta</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -5250,7 +3548,7 @@ You can also do it by opening your Flutter project's Xcode project with `open io
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>petjoy_app</string>
+	<string>cacau_da_neta</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -5259,6 +3557,8 @@ You can also do it by opening your Flutter project's Xcode project with `open io
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
@@ -5291,15 +3591,16 @@ You can also do it by opening your Flutter project's Xcode project with `open io
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>
@@ -5395,17 +3696,18 @@ C:\Users\Alex Salles\Apps - desenvolvimento\petjoy_app\lib\presentation\widgets\
 
 <file path="lib/core/constants/app_colors.dart">
 import 'package:flutter/material.dart';
+
 class AppColors {
-  // Primary — azul da logo
-  static const Color primary = Color(0xFF2B7EC1);
-  static const Color primaryDark = Color(0xFF1A5F99);
-  static const Color primaryLight = Color(0xFF5BA3D9);
-  // Accent — verde da logo
-  static const Color accent = Color(0xFF85C226);
-  static const Color accentDark = Color(0xFF5E8A1A);
-  static const Color accentLight = Color(0xFFA8D955);
-  // Pink — rosa da logo
-  static const Color pink = Color(0xFFE8739A);
+  // Primary — dourado âmbar da logo
+  static const Color primary = Color(0xFFD4900A);
+  static const Color primaryDark = Color(0xFFA86E00);
+  static const Color primaryLight = Color(0xFFE8B040);
+  // Accent — marrom cacau da logo
+  static const Color accent = Color(0xFF7A1E2E);
+  static const Color accentDark = Color(0xFF5A1220);
+  static const Color accentLight = Color(0xFF9B3040);
+  // Terracota/cobre
+  static const Color pink = Color(0xFFC97D30);
   // Neutral
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
@@ -5420,10 +3722,11 @@ class AppColors {
   static const Color grey800 = Color(0xFF424242);
   static const Color grey900 = Color(0xFF212121);
   // Status
-  static const Color success = Color(0xFF85C226);
+  static const Color success = Color(0xFF5A8A00);
   static const Color error = Color(0xFFF44336);
   static const Color warning = Color(0xFFFFC107);
-  static const Color info = Color(0xFF2B7EC1);
+  static const Color info = Color(0xFFD4900A);
+
   static Color primaryWithOpacity(double opacity) =>
       primary.withValues(alpha: opacity);
   static Color blackWithOpacity(double opacity) =>
@@ -5470,9 +3773,9 @@ class AppStrings {
   // App
   static const String appName = 'Cacau da Neta';
   static const String appVersion = '1.0.0';
-  static const String appSlogan = 'Alegria em comer bem';
+  static const String appSlogan = 'Do cacau à sua mesa';
   // Home
-  static const String homeTitle = 'Catálogo Cacau da Neta';
+  static const String homeTitle = 'Cacau da Neta';
   static const String homeGuest =
       'Explore os produtos. O login será exigido ao comprar.';
   // Products
@@ -6270,6 +4573,7 @@ class ImageUploadService {
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
+
 class XlsxImportResult {
   const XlsxImportResult({
     required this.criados,
@@ -6284,31 +4588,34 @@ class XlsxImportResult {
   bool get sucesso => erros == 0;
   int get total => criados + atualizados;
 }
+
 class _ProdutoXlsx {
   const _ProdutoXlsx({
     required this.nome,
     required this.quantidade,
     required this.preco,
-    required this.animal,
+    required this.categoria,
   });
   final String nome;
   final String quantidade;
   final double preco;
-  final String animal;
+  final String categoria;
 }
+
 class XlsxImportService {
   XlsxImportService({FirebaseFirestore? firestore})
-      : _db = firestore ?? FirebaseFirestore.instance;
+    : _db = firestore ?? FirebaseFirestore.instance;
   final FirebaseFirestore _db;
+
   /// Lê o arquivo .xlsx e importa os produtos para o Firestore.
   ///
   /// Formato esperado da planilha:
-  ///   Linha 1: cabeçalho (Nome | Quantity | Preço | Animal)
+  ///   Linha 1: cabeçalho (Nome | Quantity | Preço | Categoria)
   ///   Linha 2+: dados
   ///   Coluna A: Nome
   ///   Coluna B: Quantity (ex: 250g)
   ///   Coluna C: Preço (número)
-  ///   Coluna D: Animal (cachorro | gato | ambos)
+  ///   Coluna D: Categoria (ex: Nibs | Chá | Amêndoas | Geral)
   Future<XlsxImportResult> importar(File arquivo) async {
     final bytes = await arquivo.readAsBytes();
     final workbook = Excel.decodeBytes(bytes);
@@ -6325,6 +4632,7 @@ class XlsxImportService {
     }
     return _salvarNoBanco(produtos);
   }
+
   List<_ProdutoXlsx> _lerProdutos(Sheet sheet) {
     final produtos = <_ProdutoXlsx>[];
     // Linha 0 = cabeçalho, começa na linha 1
@@ -6333,9 +4641,10 @@ class XlsxImportService {
       final nome = _cellString(row, 0);
       final quantidade = _cellString(row, 1);
       final precoRaw = _cellString(row, 2);
-      final animal = _cellString(row, 3).toLowerCase();
+      final categoria = _cellString(row, 3);
       if (nome.isEmpty) continue;
-      final preco = double.tryParse(
+      final preco =
+          double.tryParse(
             precoRaw
                 .replaceAll('R\$', '')
                 .replaceAll('.', '')
@@ -6344,33 +4653,29 @@ class XlsxImportService {
           ) ??
           0;
       if (preco <= 0) continue;
-      produtos.add(_ProdutoXlsx(
-        nome: nome,
-        quantidade: quantidade,
-        preco: preco,
-        animal: animal,
-      ));
+      produtos.add(
+        _ProdutoXlsx(
+          nome: nome,
+          quantidade: quantidade,
+          preco: preco,
+          categoria: categoria,
+        ),
+      );
     }
     return produtos;
   }
+
   String _cellString(List<Data?> row, int index) {
     if (index >= row.length) return '';
     final cell = row[index];
     if (cell == null || cell.value == null) return '';
     return cell.value.toString().trim();
   }
-  String _mapCategoria(String animal) {
-    switch (animal) {
-      case 'cachorro':
-        return 'Cachorro';
-      case 'gato':
-        return 'Gato';
-      case 'ambos':
-        return 'Ambos';
-      default:
-        return animal.isNotEmpty ? animal : 'Geral';
-    }
+
+  String _mapCategoria(String categoria) {
+    return categoria.isNotEmpty ? categoria : 'Geral';
   }
+
   Future<XlsxImportResult> _salvarNoBanco(List<_ProdutoXlsx> produtos) async {
     final colecao = _db.collection('products');
     int criados = 0;
@@ -6379,8 +4684,10 @@ class XlsxImportService {
     final mensagensErro = <String>[];
     for (final p in produtos) {
       try {
-        final descricao = p.quantidade.isNotEmpty ? 'Embalagem: ${p.quantidade}' : '';
-        final categoria = _mapCategoria(p.animal);
+        final descricao = p.quantidade.isNotEmpty
+            ? 'Embalagem: ${p.quantidade}'
+            : '';
+        final categoria = _mapCategoria(p.categoria);
         final agora = FieldValue.serverTimestamp();
         final snapshot = await colecao
             .where('name', isEqualTo: p.nome)
@@ -6424,76 +4731,55 @@ class XlsxImportService {
 </file>
 
 <file path="lib/firebase_options.dart">
-// File generated by FlutterFire CLI.
-// ignore_for_file: type=lint
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       return web;
     }
+
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
       case TargetPlatform.windows:
-        return windows;
       case TargetPlatform.linux:
+      case TargetPlatform.fuchsia:
         throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      default:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions are not supported for this platform.',
+          'DefaultFirebaseOptions are not configured for this platform.',
         );
     }
   }
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB7syHKVxD0oUDXZb8EZNf5o1wRgu4YJ_Q',
-    appId: '1:832723228892:web:1fb7e5a654e120a9917c19',
-    messagingSenderId: '832723228892',
-    projectId: 'petjoyapp-fac7f',
-    authDomain: 'petjoyapp-fac7f.firebaseapp.com',
-    storageBucket: 'petjoyapp-fac7f.firebasestorage.app',
-    measurementId: 'G-B93HPEJ2QM',
-  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA1l_2nCLKxB9vqtov3DtxCqmuqtYs7zV4',
-    appId: '1:832723228892:android:cc9f2310aff2aba6917c19',
-    messagingSenderId: '832723228892',
-    projectId: 'petjoyapp-fac7f',
-    storageBucket: 'petjoyapp-fac7f.firebasestorage.app',
+    apiKey: 'PLACEHOLDER',
+    appId: 'PLACEHOLDER',
+    messagingSenderId: 'PLACEHOLDER',
+    projectId: 'PLACEHOLDER',
+    storageBucket: 'PLACEHOLDER',
   );
+
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCQGOs2MPIbkK3N6tWzgQSrp9ia146Sst4',
-    appId: '1:832723228892:ios:c9a35817e8b63ded917c19',
-    messagingSenderId: '832723228892',
-    projectId: 'petjoyapp-fac7f',
-    storageBucket: 'petjoyapp-fac7f.firebasestorage.app',
-    iosBundleId: 'com.example.petjoyApp',
+    apiKey: 'PLACEHOLDER',
+    appId: 'PLACEHOLDER',
+    messagingSenderId: 'PLACEHOLDER',
+    projectId: 'PLACEHOLDER',
+    storageBucket: 'PLACEHOLDER',
+    iosBundleId: 'PLACEHOLDER',
   );
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCQGOs2MPIbkK3N6tWzgQSrp9ia146Sst4',
-    appId: '1:832723228892:ios:c9a35817e8b63ded917c19',
-    messagingSenderId: '832723228892',
-    projectId: 'petjoyapp-fac7f',
-    storageBucket: 'petjoyapp-fac7f.firebasestorage.app',
-    iosBundleId: 'com.example.petjoyApp',
-  );
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyB7syHKVxD0oUDXZb8EZNf5o1wRgu4YJ_Q',
-    appId: '1:832723228892:web:1fb7e5a654e120a9917c19',
-    messagingSenderId: '832723228892',
-    projectId: 'petjoyapp-fac7f',
-    authDomain: 'petjoyapp-fac7f.firebaseapp.com',
-    storageBucket: 'petjoyapp-fac7f.firebasestorage.app',
-    measurementId: 'G-B93HPEJ2QM',
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'PLACEHOLDER',
+    appId: 'PLACEHOLDER',
+    messagingSenderId: 'PLACEHOLDER',
+    projectId: 'PLACEHOLDER',
+    authDomain: 'PLACEHOLDER',
+    storageBucket: 'PLACEHOLDER',
   );
 }
 </file>
@@ -6506,23 +4792,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'firebase_options.dart';
 import 'presentation/screens/home_screen.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // Habilita persistência offline do Firestore
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
   );
-  runApp(
-    const ProviderScope(
-      child: PetJoyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: CacauDaNetaApp()));
 }
-class PetJoyApp extends StatelessWidget {
-  const PetJoyApp({super.key});
+
+class CacauDaNetaApp extends StatelessWidget {
+  const CacauDaNetaApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -7350,7 +5632,7 @@ class _AdminImportScreenState extends ConsumerState<AdminImportScreen> {
                     _FormatRow(col: 'C', label: 'Preço (número, ex: 20.90)'),
                     _FormatRow(
                       col: 'D',
-                      label: 'Animal (cachorro / gato / ambos)',
+                      label: 'Categoria (ex: Nibs / Chá / Amêndoas / Geral)',
                     ),
                     const SizedBox(height: 8),
                     const Text(
@@ -8446,14 +6728,14 @@ class _AdminProductsScreenState extends ConsumerState<AdminProductsScreen> {
                   errorBuilder: (_, _, _) => SizedBox(
                     width: 52,
                     height: 52,
-                    child: Image.asset('assets/images/petjoy_logo.png'),
+                    child: Image.asset('assets/images/Logomarca com nome.jpeg'),
                   ),
                 ),
               )
             : SizedBox(
                 width: 52,
                 height: 52,
-                child: Image.asset('assets/images/petjoy_logo.png'),
+                child: Image.asset('assets/images/Logomarca com nome.jpeg'),
               ),
         title: Text(product.name),
         subtitle: Text('${product.category} · $priceText'),
@@ -8831,11 +7113,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_provider.dart';
 import 'home_screen.dart';
+
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
   @override
   ConsumerState<AuthScreen> createState() => _AuthScreenState();
 }
+
 class _AuthScreenState extends ConsumerState<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
@@ -8851,6 +7135,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -8884,19 +7169,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_mapAuthError(error)),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_mapAuthError(error))));
     } catch (_) {
       if (!mounted) {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Não foi possível concluir a operação.'),
-        ),
+        const SnackBar(content: Text('Não foi possível concluir a operação.')),
       );
     } finally {
       if (mounted) {
@@ -8906,6 +7187,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       }
     }
   }
+
   Future<void> _resetPassword() async {
     final email = _emailController.text.trim();
     if (email.isEmpty) {
@@ -8922,21 +7204,18 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('E-mail de recuperacao enviado.'),
-        ),
+        const SnackBar(content: Text('E-mail de recuperacao enviado.')),
       );
     } on FirebaseAuthException catch (error) {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_mapAuthError(error)),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_mapAuthError(error))));
     }
   }
+
   String _mapAuthError(FirebaseAuthException error) {
     switch (error.code) {
       case 'invalid-email':
@@ -8955,13 +7234,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         return error.message ?? 'Falha na autenticação.';
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final title = _isLogin ? 'Entrar' : 'Criar conta';
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBar(title: Text(title)),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -8977,7 +7255,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Image.asset(
-                          'assets/images/petjoy_logo.png',
+                          'assets/images/Logomarca com nome.jpeg',
                           height: 80,
                         ),
                         const SizedBox(height: 12),
@@ -9079,7 +7357,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                               ? const SizedBox(
                                   width: 20,
                                   height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : Text(title),
                         ),
@@ -9124,11 +7404,13 @@ import '../../providers/user_provider.dart';
 import '../auth_screen.dart';
 import '../orders/pix_payment_screen.dart';
 import '../../../core/extensions/format_extensions.dart';
+
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
   @override
   ConsumerState<CartScreen> createState() => _CartScreenState();
 }
+
 class _CartScreenState extends ConsumerState<CartScreen> {
   bool _isCheckingOut = false;
   Future<void> _handleCheckout() async {
@@ -9167,21 +7449,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       ref.read(cartProvider.notifier).clear();
       if (!mounted) return;
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => PixPaymentScreen(pixData: pixData),
-        ),
+        MaterialPageRoute(builder: (_) => PixPaymentScreen(pixData: pixData)),
       );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString().replaceAll('Exception: ', '')),
-        ),
+        SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
       );
     } finally {
       if (mounted) setState(() => _isCheckingOut = false);
     }
   }
+
   Future<void> _confirmClear() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -9204,6 +7483,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       ref.read(cartProvider.notifier).clear();
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final cart = ref.watch(cartProvider);
@@ -9268,6 +7548,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     );
   }
 }
+
 class _CartItemTile extends ConsumerWidget {
   const _CartItemTile({required this.item});
   final CartItemModel item;
@@ -9369,6 +7650,7 @@ class _CartItemTile extends ConsumerWidget {
     );
   }
 }
+
 class _QuantityButton extends StatelessWidget {
   const _QuantityButton({required this.icon, required this.onPressed});
   final IconData icon;
@@ -9390,6 +7672,7 @@ class _QuantityButton extends StatelessWidget {
     );
   }
 }
+
 class _CartSummary extends StatelessWidget {
   const _CartSummary({
     required this.cart,
@@ -9403,8 +7686,7 @@ class _CartSummary extends StatelessWidget {
   final VoidCallback onCheckout;
   @override
   Widget build(BuildContext context) {
-    final totalText =
-        cart.totalPrice.toBRL();
+    final totalText = cart.totalPrice.toBRL();
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       decoration: BoxDecoration(
@@ -9460,6 +7742,7 @@ class _CartSummary extends StatelessWidget {
     );
   }
 }
+
 class _ImagePlaceholder extends StatelessWidget {
   const _ImagePlaceholder();
   @override
@@ -9469,7 +7752,7 @@ class _ImagePlaceholder extends StatelessWidget {
       height: 64,
       color: AppColors.grey200,
       child: Image.asset(
-        'assets/images/petjoy_logo.png',
+        'assets/images/Logomarca com nome.jpeg',
         height: 32,
         opacity: const AlwaysStoppedAnimation(0.3),
       ),
@@ -9490,6 +7773,7 @@ import 'auth_screen.dart';
 import 'cart/cart_screen.dart';
 import 'orders/my_orders_screen.dart';
 import 'products/product_list_screen.dart';
+
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
   @override
@@ -9537,9 +7821,7 @@ class HomeScreen extends ConsumerWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const AdminPanelScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const AdminPanelScreen()),
                 );
               },
             ),
@@ -9566,18 +7848,12 @@ class HomeScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 8),
-              Image.asset(
-                'assets/images/petjoy_logo.png',
-                height: 100,
-              ),
+              Image.asset('assets/images/Logomarca com nome.jpeg', height: 100),
               const SizedBox(height: 12),
               const Text(
-                'Catálogo Cacau da Neta',
+                'Cacau da Neta',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 8),
               Text(
@@ -9614,9 +7890,7 @@ class HomeScreen extends ConsumerWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const CartScreen(),
-                          ),
+                          MaterialPageRoute(builder: (_) => const CartScreen()),
                         );
                       },
                     ),
@@ -9681,6 +7955,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
+
 class _MenuCard extends StatelessWidget {
   const _MenuCard({
     required this.icon,
@@ -9704,10 +7979,7 @@ class _MenuCard extends StatelessWidget {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                height: 1.3,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600, height: 1.3),
             ),
           ],
         ),
@@ -10385,11 +8657,9 @@ import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../auth_screen.dart';
 import '../cart/cart_screen.dart';
+
 class ProductDetailScreen extends ConsumerWidget {
-  const ProductDetailScreen({
-    super.key,
-    required this.product,
-  });
+  const ProductDetailScreen({super.key, required this.product});
   final ProductModel product;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -10481,15 +8751,15 @@ class ProductDetailScreen extends ConsumerWidget {
                       ScaffoldMessenger.of(context)
                         ..hideCurrentSnackBar()
                         ..showSnackBar(
-                        SnackBar(
-                          duration: const Duration(seconds: 2),
-                          content: Text(
-                            inCart
-                                ? '${product.name} atualizado no carrinho.'
-                                : '${product.name} adicionado ao carrinho.',
-                          ),                          
-                        ),
-                      );
+                          SnackBar(
+                            duration: const Duration(seconds: 2),
+                            content: Text(
+                              inCart
+                                  ? '${product.name} atualizado no carrinho.'
+                                  : '${product.name} adicionado ao carrinho.',
+                            ),
+                          ),
+                        );
                     },
                     icon: const Icon(Icons.shopping_cart_outlined),
                     label: Text(
@@ -10535,6 +8805,7 @@ class ProductDetailScreen extends ConsumerWidget {
     );
   }
 }
+
 class _ProductPlaceholder extends StatelessWidget {
   const _ProductPlaceholder();
   @override
@@ -10543,7 +8814,7 @@ class _ProductPlaceholder extends StatelessWidget {
       color: AppColors.grey200,
       child: Center(
         child: Image.asset(
-          'assets/images/petjoy_logo.png',
+          'assets/images/Logomarca com nome.jpeg',
           height: 64,
           opacity: const AlwaysStoppedAnimation(0.3),
         ),
@@ -10556,6 +8827,7 @@ class _ProductPlaceholder extends StatelessWidget {
 <file path="lib/presentation/screens/products/product_list_screen.dart">
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../core/constants/app_colors.dart';
 import '../../../data/models/product_model.dart';
 import '../../providers/cart_provider.dart';
@@ -10563,23 +8835,29 @@ import '../../providers/product_provider.dart';
 import '../../widgets/product_card.dart';
 import '../cart/cart_screen.dart';
 import 'product_detail_screen.dart';
+
 class ProductListScreen extends ConsumerStatefulWidget {
   const ProductListScreen({super.key});
+
   @override
   ConsumerState<ProductListScreen> createState() => _ProductListScreenState();
 }
+
 class _ProductListScreenState extends ConsumerState<ProductListScreen> {
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
+
   String _searchQuery = '';
-  String? _selectedCategory;
-  // Ordem fixa das categorias
-  static const _categoryOrder = ['Cachorro', 'Gato', 'Ambos'];
+  String _selectedCategory = 'Todos';
+
+  static const _categories = ['Todos', 'Nibs', 'Chá', 'Amêndoas', 'Geral'];
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
   }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -10588,27 +8866,28 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
       ..dispose();
     super.dispose();
   }
+
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 300) {
       ref.read(productPaginationProvider.notifier).loadMore();
     }
   }
-  // Retorna o peso de ordenação: Cachorro=0, Gato=1, Ambos=2, outros=3
+
   int _categoryWeight(String category) {
-    final idx = _categoryOrder.indexWhere(
-      (c) => c.toLowerCase() == category.toLowerCase(),
-    );
-    return idx >= 0 ? idx : _categoryOrder.length;
+    final idx = _categories.indexOf(category);
+    return idx >= 0 ? idx : _categories.length;
   }
+
   List<ProductModel> _applyFilters(List<ProductModel> products) {
     var filtered = products;
-    if (_selectedCategory != null) {
+
+    if (_selectedCategory != 'Todos') {
       filtered = filtered
-          .where((p) =>
-              p.category.toLowerCase() == _selectedCategory!.toLowerCase())
+          .where((p) => p.category == _selectedCategory)
           .toList();
     }
+
     if (_searchQuery.isNotEmpty) {
       final query = _searchQuery.toLowerCase();
       filtered = filtered
@@ -10619,37 +8898,22 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
           )
           .toList();
     }
-    // Ordena: Cachorro → Gato → Ambos → outros; dentro de cada grupo por nome
+
     filtered.sort((a, b) {
       final weightA = _categoryWeight(a.category);
       final weightB = _categoryWeight(b.category);
       if (weightA != weightB) return weightA.compareTo(weightB);
       return a.name.compareTo(b.name);
     });
+
     return filtered;
   }
-  // Retorna categorias presentes na ordem fixa
-  List<String> _extractCategories(List<ProductModel> products) {
-    final present = products
-        .map((p) => p.category)
-        .where((c) => c.isNotEmpty)
-        .toSet();
-    // Mantém a ordem fixa, adiciona categorias desconhecidas no final
-    final ordered = _categoryOrder.where((c) => present.contains(c)).toList();
-    for (final c in present) {
-      if (!ordered.contains(c)) ordered.add(c);
-    }
-    return ordered;
-  }
-  // "Ambos" → "Cachorro & Gato" no chip
-  String _chipLabel(String category) {
-    if (category.toLowerCase() == 'ambos') return 'Cachorro & Gato';
-    return category;
-  }
+
   @override
   Widget build(BuildContext context) {
     final pageState = ref.watch(productPaginationProvider);
     final cartCount = ref.watch(cartProvider).totalItems;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Produtos'),
@@ -10677,13 +8941,17 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
             if (pageState.isLoading && pageState.products.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
+
             if (pageState.error != null && pageState.products.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.error_outline,
-                        size: 48, color: AppColors.error),
+                    const Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: AppColors.error,
+                    ),
                     const SizedBox(height: 12),
                     const Text('Erro ao carregar produtos.'),
                     const SizedBox(height: 12),
@@ -10697,11 +8965,11 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                 ),
               );
             }
-            final categories = _extractCategories(pageState.products);
+
             final filtered = _applyFilters(pageState.products);
+
             return Column(
               children: [
-                // Barra de busca
                 Padding(
                   padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                   child: TextField(
@@ -10723,77 +8991,62 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                     ),
                   ),
                 ),
-                // Chips de categoria
-                if (categories.isNotEmpty)
-                  SizedBox(
-                    height: 48,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: categories.length + 1,
-                      separatorBuilder: (_, _) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
-                          final isAll = _selectedCategory == null;
-                          return FilterChip(
-                            label: const Text('Todos'),
-                            selected: isAll,
-                            onSelected: (_) =>
-                                setState(() => _selectedCategory = null),
-                            selectedColor:
-                                AppColors.primary.withValues(alpha: 0.15),
-                            checkmarkColor: AppColors.primary,
-                            labelStyle: TextStyle(
-                              color: isAll
-                                  ? AppColors.primary
-                                  : AppColors.grey700,
-                              fontWeight: isAll
-                                  ? FontWeight.w600
-                                  : FontWeight.normal,
-                            ),
-                          );
-                        }
-                        final category = categories[index - 1];
-                        final isSelected = _selectedCategory == category;
-                        return FilterChip(
-                          label: Text(_chipLabel(category)),
-                          selected: isSelected,
-                          onSelected: (_) => setState(() {
-                            _selectedCategory = isSelected ? null : category;
-                          }),
-                          selectedColor:
-                              AppColors.primary.withValues(alpha: 0.15),
-                          checkmarkColor: AppColors.primary,
-                          labelStyle: TextStyle(
-                            color: isSelected
-                                ? AppColors.primary
-                                : AppColors.grey700,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                          ),
-                        );
-                      },
+                SizedBox(
+                  height: 48,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _categories.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      final category = _categories[index];
+                      final isSelected = _selectedCategory == category;
+
+                      return FilterChip(
+                        label: Text(category),
+                        selected: isSelected,
+                        onSelected: (selected) => setState(() {
+                          _selectedCategory = selected ? category : 'Todos';
+                        }),
+                        selectedColor: AppColors.primary.withValues(
+                          alpha: 0.15,
+                        ),
+                        checkmarkColor: AppColors.primary,
+                        labelStyle: TextStyle(
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.grey700,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                        ),
+                      );
+                    },
                   ),
-                // Grade de produtos
+                ),
                 Expanded(
                   child: filtered.isEmpty
                       ? Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.search_off,
-                                  size: 48, color: AppColors.grey400),
+                              const Icon(
+                                Icons.search_off,
+                                size: 48,
+                                color: AppColors.grey400,
+                              ),
                               const SizedBox(height: 12),
                               Text(
                                 _searchQuery.isNotEmpty ||
-                                        _selectedCategory != null
+                                        _selectedCategory != 'Todos'
                                     ? 'Nenhum produto encontrado.'
                                     : 'Nenhum produto disponível.',
                                 style: const TextStyle(
-                                    color: AppColors.grey600),
+                                  color: AppColors.grey600,
+                                ),
                               ),
                             ],
                           ),
@@ -10801,19 +9054,22 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                       : GridView.builder(
                           controller: _scrollController,
                           padding: const EdgeInsets.all(12),
-                          itemCount: filtered.length +
-                              (pageState.isLoading && pageState.products.isNotEmpty
-                                  ? 1  // spinner de carregamento
-                                  : (!pageState.hasMore && pageState.products.isNotEmpty
-                                      ? 1  // indicador de fim de lista
-                                      : 0)),
+                          itemCount:
+                              filtered.length +
+                              (pageState.isLoading &&
+                                      pageState.products.isNotEmpty
+                                  ? 1
+                                  : (!pageState.hasMore &&
+                                            pageState.products.isNotEmpty
+                                        ? 1
+                                        : 0)),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 12,
-                            crossAxisSpacing: 12,
-                            childAspectRatio: 0.68,
-                          ),
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
+                                childAspectRatio: 0.68,
+                              ),
                           itemBuilder: (context, index) {
                             if (index == filtered.length) {
                               if (pageState.isLoading) {
@@ -10824,7 +9080,7 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                                   ),
                                 );
                               }
-                              // Fim da lista
+
                               return Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(16),
@@ -10838,14 +9094,15 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                                 ),
                               );
                             }
+
                             final product = filtered[index];
                             return ProductCard(
                               product: product,
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (_) => ProductDetailScreen(
-                                        product: product),
+                                    builder: (_) =>
+                                        ProductDetailScreen(product: product),
                                   ),
                                 );
                               },
@@ -10868,12 +9125,9 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/models/product_model.dart';
 import '../../core/extensions/format_extensions.dart';
+
 class ProductCard extends StatelessWidget {
-  const ProductCard({
-    super.key,
-    required this.product,
-    this.onTap,
-  });
+  const ProductCard({super.key, required this.product, this.onTap});
   final ProductModel product;
   final VoidCallback? onTap;
   // Extrai "250g" de "Embalagem: 250g"
@@ -10883,16 +9137,12 @@ class ProductCard extends StatelessWidget {
     if (parts.length < 2) return description.trim();
     return parts.last.trim();
   }
-  // "Ambos" → "Cachorro & Gato"
-  String _labelCategoria(String category) {
-    if (category.toLowerCase() == 'ambos') return 'Cachorro & Gato';
-    return category;
-  }
+
   @override
   Widget build(BuildContext context) {
     final priceText = product.price.toBRL();
     final quantidade = _parseQuantidade(product.description);
-    final categoriaLabel = _labelCategoria(product.category);
+    final categoriaLabel = product.category;
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -10965,6 +9215,7 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
+
 class _ProductPlaceholder extends StatelessWidget {
   const _ProductPlaceholder();
   @override
@@ -10974,7 +9225,7 @@ class _ProductPlaceholder extends StatelessWidget {
       color: Colors.black12,
       child: Center(
         child: Image.asset(
-          'assets/images/petjoy_logo.png',
+          'assets/images/Logomarca com nome.jpeg',
           height: 48,
           opacity: const AlwaysStoppedAnimation(0.3),
         ),
@@ -11359,11 +9610,11 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "petjoy_app");
+    gtk_header_bar_set_title(header_bar, "Cacau da Neta");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
-    gtk_window_set_title(window, "petjoy_app");
+    gtk_window_set_title(window, "Cacau da Neta");
   }
 
   gtk_window_set_default_size(window, 1280, 720);
@@ -11518,7 +9769,9 @@ import file_picker
 import file_selector_macos
 import firebase_auth
 import firebase_core
+import firebase_messaging
 import firebase_storage
+import sign_in_with_apple
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FLTFirebaseFirestorePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseFirestorePlugin"))
@@ -11527,7 +9780,9 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
   FLTFirebaseAuthPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseAuthPlugin"))
   FLTFirebaseCorePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseCorePlugin"))
+  FLTFirebaseMessagingPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseMessagingPlugin"))
   FLTFirebaseStoragePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseStoragePlugin"))
+  SignInWithApplePlugin.register(with: registry.registrar(forPlugin: "SignInWithApplePlugin"))
 }
 </file>
 
@@ -12978,6 +11233,25 @@ for raiz, dirs, arquivos in os.walk(pasta):
 print('Normalizacao concluida.')
 </file>
 
+<file path="package.json">
+{
+  "name": "cacau-da-neta",
+  "version": "1.0.0",
+  "description": "Seed de produtos Cacau da Neta",
+  "main": "seed_produtos.js",
+  "scripts": {
+    "seed": "node seed_produtos.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "firebase-admin": "^13.10.0"
+  }
+}
+</file>
+
 <file path="preparar_auditoria_petjoy.ps1">
 # preparar_auditoria.ps1
 # Gera um ZIP de auditoria contendo SOMENTE código e configs relevantes.
@@ -13180,10 +11454,10 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
-      sha256: afe15ce18a287d2f89da95566e62892df339b1936bbe9b83587df45b944ee72a
+      sha256: "0d1f0adfabbab9f46a1a80ce84a4d8b852b6e4dbf53ce413b30e0cf7d3631b71"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.67"
+    version: "1.3.72"
   archive:
     dependency: transitive
     description:
@@ -13252,50 +11526,50 @@ packages:
     dependency: "direct main"
     description:
       name: cloud_firestore
-      sha256: e17d7a4342374973decaee550f9f4e4ddb8c89a8b41c2540d0c24004f49cdf36
+      sha256: df9a5377365860699a96b1810a5bb37ef56db43f8e250e9f758a520f8bf8625a
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.3"
+    version: "6.5.0"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
       name: cloud_firestore_platform_interface
-      sha256: c110a968cc11a83f0e2b88c335340cb21d123ab9e440aaa834eb33c20505893c
+      sha256: "26e3c7f192c6b58d95d69d006f5abb722a7df11835568473438a8631041b7468"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.7"
+    version: "8.0.2"
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
-      sha256: ff6c87ecb167f35e84027a36b1f65994da6a81e1b4eb14d0a8cdd2be09e861c3
+      sha256: "0cdc8205feb73a779730782f885aaa8c23fa2e02ab57caec6076bbdcef473a41"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.3"
+    version: "5.5.0"
   cloud_functions:
     dependency: "direct main"
     description:
       name: cloud_functions
-      sha256: "7b2e82cad51c198d2da8744da5c83550e8d00e4e1abcc0052057df86ff647b55"
+      sha256: f443d63d114c313b00a67a9507f63c17972d70cdb4a62cbbf43561246da05187
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.7"
+    version: "6.3.2"
   cloud_functions_platform_interface:
     dependency: transitive
     description:
       name: cloud_functions_platform_interface
-      sha256: "02ad00860e72351539e40497e158efc400febaf0341ac3d1ec078108f81a9a0a"
+      sha256: "640a625abb94b62423ebb67f0fca684ab03127194880e419f05460475f318202"
       url: "https://pub.dev"
     source: hosted
-    version: "5.8.10"
+    version: "6.0.2"
   cloud_functions_web:
     dependency: transitive
     description:
       name: cloud_functions_web
-      sha256: "0d9464871213f637fdd90e88377347a4d700918445c04119122cd22323b99458"
+      sha256: da3540b7c0390d6cfcf8d17b6e2722e3ae768801cd689ec31ed275d1e6b8ed24
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.3"
+    version: "5.1.8"
   code_assets:
     dependency: transitive
     description:
@@ -13420,74 +11694,98 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_auth
-      sha256: "1c290de59ba88d3b193e5933441ea4793d623e802d75bd4135e36d550c3f6b62"
+      sha256: "9905a315f1235a649e29df19b246adde7350a11234837cd605254b8e25144711"
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.0"
+    version: "6.5.2"
   firebase_auth_platform_interface:
     dependency: transitive
     description:
       name: firebase_auth_platform_interface
-      sha256: c830e2a1c69c27242a920296784458ad6eb71decdfa083578f7788dbde5d3a69
+      sha256: f757dc5636ce2b204a82383f7246ef0d9c925f9e96c8c9a4a6c315d673d662bb
       url: "https://pub.dev"
     source: hosted
-    version: "8.1.7"
+    version: "9.0.2"
   firebase_auth_web:
     dependency: transitive
     description:
       name: firebase_auth_web
-      sha256: "809d0807a7b6dbdd2d2dd04f217375aaa9835794750a4eec408c2990ed505e41"
+      sha256: "1c44330eef3c82068e0c2919b6b015897d49211dcccdf64f90a2ed73ce216ecb"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.3"
+    version: "6.2.2"
   firebase_core:
     dependency: "direct main"
     description:
       name: firebase_core
-      sha256: f0997fee80fbb6d2c658c5b88ae87ba1f9506b5b37126db64fc2e75d8e977fbb
+      sha256: ec46a100a560d3bd5f97f2d89ba7492cb09b6dd0a4a28753d1258f360d6bd9f9
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.0"
+    version: "4.10.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
       name: firebase_core_platform_interface
-      sha256: cccb4f572325dc14904c02fcc7db6323ad62ba02536833dddb5c02cac7341c64
+      sha256: "4a120366dbf7d5a8ee9438978530b664b855728fb8dcc3a201017660817e555b"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.2"
+    version: "7.0.1"
   firebase_core_web:
     dependency: transitive
     description:
       name: firebase_core_web
-      sha256: "856ca92bf2d75a63761286ab8e791bda3a85184c2b641764433b619647acfca6"
+      sha256: "5ad1be848692ec148f2d6a8ad2a3838cb852ea5f3c9e6479a7afce479e1854f8"
       url: "https://pub.dev"
     source: hosted
-    version: "3.5.0"
+    version: "3.8.0"
+  firebase_messaging:
+    dependency: "direct main"
+    description:
+      name: firebase_messaging
+      sha256: "9651e833454156b9f0927eaedccffba0f7f6a6e20ceddef82517211e7017e9c4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "16.3.0"
+  firebase_messaging_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_messaging_platform_interface
+      sha256: "292bb5dc9c4a429078895406c347d7c7690deb858c1adeed8f4b4346f769dfa3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.8.0"
+  firebase_messaging_web:
+    dependency: transitive
+    description:
+      name: firebase_messaging_web
+      sha256: "08c565bc83729439f5de2dfea77b4832002b705eb2f840366cefa80e4e5c3c66"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
   firebase_storage:
     dependency: "direct main"
     description:
       name: firebase_storage
-      sha256: "68012b80a94f74c459d1f05ce222a1c7dbf3559c6fcfb0b86ab0b6a231f3af95"
+      sha256: "540a2eb9b622ad7a173809a215ba3b2ba2a7a56a88d35dd7d9f392abeec45dbf"
       url: "https://pub.dev"
     source: hosted
-    version: "13.1.0"
+    version: "13.4.2"
   firebase_storage_platform_interface:
     dependency: transitive
     description:
       name: firebase_storage_platform_interface
-      sha256: "8b33839011b71d2b21db7328d526a0caea469f41cdb7a925804faf7161ef0f76"
+      sha256: f5fd1181f6cc7dcf7ea85fddb8ce32a0e8ebf09a1dfe3c70c4ae7e540cb57be3
       url: "https://pub.dev"
     source: hosted
-    version: "5.2.18"
+    version: "6.0.2"
   firebase_storage_web:
     dependency: transitive
     description:
       name: firebase_storage_web
-      sha256: dc62ab78e2e7c4957f08d9828dbd4c74152a6d9faadbb2fc85f3a632b24cad63
+      sha256: a4387d657b09dfa1bcd52d3a1ba276b5a22b3f5dffa9fce8a0e0bd8aa734d43f
       url: "https://pub.dev"
     source: hosted
-    version: "3.11.3"
+    version: "3.11.8"
   fixnum:
     dependency: transitive
     description:
@@ -13731,10 +12029,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: "23f08335362185a5ea2ad3a4e597f1375e78bce8a040df5c600c8d3552ef2394"
+      sha256: "1741988757a65eb6b36abe716829688cf01910bbf91c34354ff7ec1c3de2b349"
       url: "https://pub.dev"
     source: hosted
-    version: "1.17.0"
+    version: "1.18.0"
   mime:
     dependency: transitive
     description:
@@ -13855,6 +12153,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.1"
+  sign_in_with_apple:
+    dependency: "direct main"
+    description:
+      name: sign_in_with_apple
+      sha256: d284f8e235ab0c5be09a1e9146466912bae8f15f0bd5eb3c4cb999b57cd5c3f9
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.1.0"
+  sign_in_with_apple_platform_interface:
+    dependency: transitive
+    description:
+      name: sign_in_with_apple_platform_interface
+      sha256: "981bca52cf3bb9c3ad7ef44aace2d543e5c468bb713fd8dda4275ff76dfa6659"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  sign_in_with_apple_web:
+    dependency: transitive
+    description:
+      name: sign_in_with_apple_web
+      sha256: f316400827f52cafcf50d00e1a2e8a0abc534ca1264e856a81c5f06bd5b10fed
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -13912,10 +12234,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: "8161c84903fd860b26bfdefb7963b3f0b68fee7adea0f59ef805ecca346f0c7a"
+      sha256: "949a932224383300f01be9221c39180316445ecb8e7547f70a41a35bf421fb9e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.10"
+    version: "0.7.11"
   typed_data:
     dependency: transitive
     description:
@@ -13990,67 +12312,7 @@ packages:
     version: "3.1.3"
 sdks:
   dart: ">=3.11.0 <4.0.0"
-  flutter: ">=3.38.4"
-</file>
-
-<file path="pubspec.yaml">
-name: petjoy_app
-description: "Catálogo de produtos Cacau da Neta"
-publish_to: 'none'
-
-version: 1.0.0+1
-
-environment:
-  sdk: ^3.11.0
-
-dependencies:
-  flutter:
-    sdk: flutter
-
-  # Firebase
-  firebase_core: ^4.4.0
-  cloud_firestore: ^6.1.2
-  firebase_auth: ^6.2.0
-  firebase_storage: ^13.0.6
-  cloud_functions: ^6.0.7
-
-  # State Management
-  flutter_riverpod: ^2.4.0
-
-  # UI
-  google_fonts: ^6.1.0
-
-  # Date/Time
-  intl: ^0.19.0
-
-  # Utilities
-  uuid: ^4.0.0
-
-  # Local Storage
-
-  cupertino_icons: ^1.0.8
-
-  image_picker: ^1.1.2
-
-  # Importação de planilha
-  excel: ^4.0.6
-  file_picker: ^8.1.2
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
-  flutter_launcher_icons: ^0.14.1
-
-flutter:
-  uses-material-design: true
-  assets:
-    - assets/images/
-    - assets/icons/
-flutter_launcher_icons:
-  android: true
-  ios: true
-  image_path: "assets/images/petjoy_icon.png"
+  flutter: ">=3.41.0"
 </file>
 
 <file path="README.md">
@@ -14083,10 +12345,6 @@ void main() {
 }
 </file>
 
-<file path="URL do webhook do MercadoPago.txt">
-https://webhookmercadopago-klxlcaoqfq-rj.a.run.app
-</file>
-
 <file path="web/index.html">
 <!DOCTYPE html>
 <html>
@@ -14113,13 +12371,13 @@ https://webhookmercadopago-klxlcaoqfq-rj.a.run.app
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="petjoy_app">
+  <meta name="apple-mobile-web-app-title" content="Cacau da Neta">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>petjoy_app</title>
+  <title>Cacau da Neta</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -14138,13 +12396,13 @@ https://webhookmercadopago-klxlcaoqfq-rj.a.run.app
 
 <file path="web/manifest.json">
 {
-    "name": "petjoy_app",
-    "short_name": "petjoy_app",
+    "name": "Cacau da Neta",
+    "short_name": "CacauDaNeta",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#D4900A",
+    "theme_color": "#D4900A",
+    "description": "Loja online Cacau da Neta",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
@@ -14197,11 +12455,11 @@ x86/
 <file path="windows/CMakeLists.txt">
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
-project(petjoy_app LANGUAGES CXX)
+project(cacau_da_neta LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "petjoy_app")
+set(BINARY_NAME "cacau_da_neta")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -14823,12 +13081,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "petjoy_app" "\0"
+            VALUE "FileDescription", "cacau_da_neta" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "petjoy_app" "\0"
+            VALUE "InternalName", "cacau_da_neta" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "petjoy_app.exe" "\0"
-            VALUE "ProductName", "petjoy_app" "\0"
+            VALUE "OriginalFilename", "cacau_da_neta.exe" "\0"
+            VALUE "ProductName", "cacau_da_neta" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
@@ -15338,6 +13596,331 @@ class Win32Window {
 };
 
 #endif  // RUNNER_WIN32_WINDOW_H_
+</file>
+
+<file path="android/app/build.gradle.kts">
+import java.util.Properties
+
+plugins {
+    id("com.android.application")
+    id("kotlin-android")
+    id("com.google.gms.google-services")
+    id("dev.flutter.flutter-gradle-plugin")
+}
+
+val keyProperties = Properties()
+val keyPropertiesFile = rootProject.file("key.properties")
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(keyPropertiesFile.inputStream())
+}
+
+android {
+    namespace = "com.cacau.daneta"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    defaultConfig {
+        applicationId = "com.cacau.daneta"
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    signingConfigs {
+        if (keyPropertiesFile.exists()) {
+            create("release") {
+                keyAlias = keyProperties["keyAlias"] as String
+                keyPassword = keyProperties["keyPassword"] as String
+                storeFile = file(keyProperties["storeFile"] as String)
+                storePassword = keyProperties["storePassword"] as String
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig = if (keyPropertiesFile.exists())
+                signingConfigs.getByName("release")
+            else
+                signingConfigs.getByName("debug")
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
+</file>
+
+<file path="android/app/google-services_PetJoy.json">
+{
+  "project_info": {
+    "project_number": "832723228892",
+    "project_id": "petjoyapp-fac7f",
+    "storage_bucket": "petjoyapp-fac7f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832723228892:android:cc9f2310aff2aba6917c19",
+        "android_client_info": {
+          "package_name": "com.petjoy.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832723228892-3hfa9q7fqf7idr9rq59hupacgh9sn5ip.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.petjoy.app",
+            "certificate_hash": "219c1cf5929132d1360c43de0392956497056990"
+          }
+        },
+        {
+          "client_id": "832723228892-jvq3f1ir8cqjs6backg3ju8bh46j0g6t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.petjoy.app",
+            "certificate_hash": "1671594c0a461d559941ebf5b8977ebc1d20ae66"
+          }
+        },
+        {
+          "client_id": "832723228892-n3se1eus660sq212clq6gk3ljj7qg9as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1l_2nCLKxB9vqtov3DtxCqmuqtYs7zV4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832723228892-n3se1eus660sq212clq6gk3ljj7qg9as.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "832723228892-aote0v2eej84tskda5mnicdr1pdam15s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.petjoyApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+</file>
+
+<file path="android/app/google-servicesOLD.json">
+{
+  "project_info": {
+    "project_number": "832723228892",
+    "project_id": "petjoyapp-fac7f",
+    "storage_bucket": "petjoyapp-fac7f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832723228892:android:cc9f2310aff2aba6917c19",
+        "android_client_info": {
+          "package_name": "com.petjoy.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1l_2nCLKxB9vqtov3DtxCqmuqtYs7zV4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+</file>
+
+<file path="ios/Runner/AppDelegate.swift">
+import Flutter
+import UIKit
+
+@main
+@objc class AppDelegate: FlutterAppDelegate {
+  override func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    GeneratedPluginRegistrant.register(with: self)
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+}
+</file>
+
+<file path="ios/Runner/Runner.entitlements">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+</dict>
+</plist>
+</file>
+
+<file path="pubspec.yaml">
+name: cacau_da_neta
+description: "Loja online Cacau da Neta"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Firebase
+  firebase_core: ^4.4.0
+  cloud_firestore: ^6.1.2
+  firebase_auth: ^6.2.0
+  firebase_storage: ^13.0.6
+  cloud_functions: ^6.0.7
+
+  # State Management
+  flutter_riverpod: ^2.4.0
+
+  # UI
+  google_fonts: ^6.1.0
+
+  # Date/Time
+  intl: ^0.19.0
+
+  # Utilities
+  uuid: ^4.0.0
+
+  # Local Storage
+
+  cupertino_icons: ^1.0.8
+
+  image_picker: ^1.1.2
+
+  # Importação de planilha
+  excel: ^4.0.6
+  file_picker: ^8.1.2
+  sign_in_with_apple: ^8.1.0
+  firebase_messaging: ^16.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter:
+  config:
+    enable-swift-package-manager: false
+  uses-material-design: true
+  assets:
+    - assets/images/
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logomarca.png"
+</file>
+
+<file path="URL do webhook do MercadoPago.txt">
+https://webhookmercadopago-klxlcaoqfq-rj.a.run.app
+</file>
+
+<file path=".gitignore">
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+serviceAccountKey.json
+serviceAccountKeyLavaMax.json
+serviceAccountKey*.json
+
+# Firebase
+.firebase/
+.firebaserc
+
+# Scripts sensíveis
+scripts/ServiceAccountKey*.json
+seed_produtos.js
+
+# Node
+node_modules/
+functions/node_modules/
+"petjoy_release.keystore" 
+"android/app/google-servicesOLD.json" 
+"android/app/google-services_PetJoy.json" 
+"URL do webhook do MercadoPago.txt"
 </file>
 
 </files>

@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "832723228892",
+    "project_id": "petjoyapp-fac7f",
+    "storage_bucket": "petjoyapp-fac7f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832723228892:android:cc9f2310aff2aba6917c19",
+        "android_client_info": {
+          "package_name": "com.petjoy.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832723228892-3hfa9q7fqf7idr9rq59hupacgh9sn5ip.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.petjoy.app",
+            "certificate_hash": "219c1cf5929132d1360c43de0392956497056990"
+          }
+        },
+        {
+          "client_id": "832723228892-jvq3f1ir8cqjs6backg3ju8bh46j0g6t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.petjoy.app",
+            "certificate_hash": "1671594c0a461d559941ebf5b8977ebc1d20ae66"
+          }
+        },
+        {
+          "client_id": "832723228892-n3se1eus660sq212clq6gk3ljj7qg9as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1l_2nCLKxB9vqtov3DtxCqmuqtYs7zV4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832723228892-n3se1eus660sq212clq6gk3ljj7qg9as.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "832723228892-aote0v2eej84tskda5mnicdr1pdam15s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.petjoyApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
