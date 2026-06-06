@@ -1,0 +1,49 @@
+workflows:
+  ios-app-store:
+    name: iOS App Store
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.cacau.daneta
+      vars:
+        BUNDLE_ID: com.cacau.daneta
+        BUILD_NAME: 1.0.0
+        BUILD_NUMBER: 1
+    cache:
+      cache_paths:
+        - ~/.pub-cache
+        - ios/Pods
+    scripts:
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+      - name: Install pods
+        script: |
+          cd ios
+          pod install
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Flutter analyze
+        script: |
+          flutter analyze
+      - name: Build signed IPA
+        script: |
+          flutter build ipa --release \
+            --build-name="$BUILD_NAME" \
+            --build-number="$BUILD_NUMBER" \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
