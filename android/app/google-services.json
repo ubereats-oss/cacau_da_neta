@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "594909165569",
+    "project_id": "cacau-da-neta",
+    "storage_bucket": "cacau-da-neta.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:594909165569:android:abefc81b55f93a6cb7a800",
+        "android_client_info": {
+          "package_name": "com.cacau.daneta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "594909165569-gujgq76kt2li2rp7rojq6bmbr3nnrset.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cacau.daneta",
+            "certificate_hash": "1671594c0a461d559941ebf5b8977ebc1d20ae66"
+          }
+        },
+        {
+          "client_id": "594909165569-chnbvffplq8f3j60lenfp25t1qarnim7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC06uffq_fiiZfBlkv19o5uMVggZ7SoJpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "594909165569-chnbvffplq8f3j60lenfp25t1qarnim7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "594909165569-5km60h0hgg61su3ar2p7efd0ouqcjst5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cacau.daneta"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

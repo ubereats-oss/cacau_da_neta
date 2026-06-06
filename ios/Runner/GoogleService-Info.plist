@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>594909165569-5km60h0hgg61su3ar2p7efd0ouqcjst5.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.594909165569-5km60h0hgg61su3ar2p7efd0ouqcjst5</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBXx3V2Ai8f--lxakiI0HdTf9pIhT2aRko</string>
+	<key>GCM_SENDER_ID</key>
+	<string>594909165569</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.cacau.daneta</string>
+	<key>PROJECT_ID</key>
+	<string>cacau-da-neta</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cacau-da-neta.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:594909165569:ios:5e8d2ecfc4bf19c2b7a800</string>
+</dict>
+</plist>

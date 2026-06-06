@@ -49,8 +49,6 @@ serviceAccountKeyLavaMax.json
 serviceAccountKey*.json
 
 # Firebase
-google-services.json
-GoogleService-Info.plist
 .firebase/
 .firebaserc
 
