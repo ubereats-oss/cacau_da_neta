@@ -84,7 +84,7 @@ class HomeScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 8),
-              Image.asset('assets/images/Logomarca com nome.jpeg', height: 100),
+              Image.asset('assets/images/logomarca.png', height: 100),
               const SizedBox(height: 12),
               const Text(
                 'Cacau da Neta',
