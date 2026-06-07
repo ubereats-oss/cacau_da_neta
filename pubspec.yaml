@@ -1,7 +1,7 @@
 name: cacau_da_neta
 description: "Loja online Cacau da Neta"
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.0.2+3
 environment:
   sdk: ^3.11.0
 dependencies:
