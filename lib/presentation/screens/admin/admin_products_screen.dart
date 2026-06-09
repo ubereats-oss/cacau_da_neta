@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +27,7 @@ class _AdminProductsScreenState extends ConsumerState<AdminProductsScreen> {
   bool _isFeatured = false;
   bool _isSaving = false;
   File? _selectedImage;
-  // Quando não-nulo, estamos editando um produto existente
+  Uint8List? _selectedImageBytes;
   ProductModel? _editingProduct;
   @override
   void dispose() {
@@ -60,6 +62,7 @@ class _AdminProductsScreenState extends ConsumerState<AdminProductsScreen> {
     setState(() {
       _editingProduct = null;
       _selectedImage = null;
+      _selectedImageBytes = null;
       _isActive = true;
       _isFeatured = false;
     });
@@ -72,12 +75,23 @@ class _AdminProductsScreenState extends ConsumerState<AdminProductsScreen> {
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final file = await picker.pickImage(
+    final xfile = await picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 85,
     );
-    if (file == null) return;
-    setState(() => _selectedImage = File(file.path));
+    if (xfile == null) return;
+    if (kIsWeb) {
+      final bytes = await xfile.readAsBytes();
+      setState(() {
+        _selectedImageBytes = bytes;
+        _selectedImage = null;
+      });
+    } else {
+      setState(() {
+        _selectedImage = File(xfile.path);
+        _selectedImageBytes = null;
+      });
+    }
   }
 
   Future<void> _submit() async {
@@ -103,7 +117,8 @@ class _AdminProductsScreenState extends ConsumerState<AdminProductsScreen> {
             isActive: _isActive,
             isFeatured: _isFeatured,
           ),
-          newImageFile: _selectedImage,
+          newImageFile: kIsWeb ? null : _selectedImage,
+          newImageBytes: kIsWeb ? _selectedImageBytes : null,
         );
       } else {
         await actions.createProduct(
@@ -113,7 +128,8 @@ class _AdminProductsScreenState extends ConsumerState<AdminProductsScreen> {
           category: _categoryController.text,
           isActive: _isActive,
           isFeatured: _isFeatured,
-          imageFile: _selectedImage,
+          imageFile: kIsWeb ? null : _selectedImage,
+          imageBytes: kIsWeb ? _selectedImageBytes : null,
         );
       }
       if (!mounted) return;
@@ -273,15 +289,22 @@ class _AdminProductsScreenState extends ConsumerState<AdminProductsScreen> {
                   onChanged: (value) => setState(() => _isFeatured = value),
                 ),
                 const SizedBox(height: 12),
-                if (_selectedImage != null) ...[
+                if (_selectedImage != null || _selectedImageBytes != null) ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      _selectedImage!,
-                      height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
+                    child: _selectedImageBytes != null
+                        ? Image.memory(
+                            _selectedImageBytes!,
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            _selectedImage!,
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   const SizedBox(height: 8),
                 ] else if (isEditing &&

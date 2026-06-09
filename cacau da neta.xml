@@ -169,7 +169,6 @@ lib/data/repositories/product_repository.dart
 lib/data/repositories/user_repository.dart
 lib/data/services/image_upload_service.dart
 lib/data/services/xlsx_import_service.dart
-lib/firebase_options.dart
 lib/main.dart
 lib/presentation/providers/auth_provider.dart
 lib/presentation/providers/cart_provider.dart
@@ -241,6 +240,7 @@ pubspec.lock
 pubspec.yaml
 README.md
 test/widget_test.dart
+token Mercado Pago.txt
 URL do webhook do MercadoPago.txt
 web/favicon.png
 web/icons/Icon-192.png
@@ -271,6 +271,10 @@ windows/runner/win32_window.h
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="token Mercado Pago.txt">
+BetaFezCacaudaNetaem09-06-2026!!##$$
+</file>
 
 <file path=".metadata">
 # This file tracks properties of this Flutter project.
@@ -2536,62 +2540,6 @@ Runner/GeneratedPluginRegistrant.*
 #include "Generated.xcconfig"
 </file>
 
-<file path="ios/Podfile">
-platform :ios, '15.5'
-
-ENV['COCOAPODS_DISABLE_STATS'] = 'true'
-
-project 'Runner', {
-  'Debug' => :debug,
-  'Profile' => :release,
-  'Release' => :release,
-}
-
-def flutter_root
-  generated_xcode_build_settings_path = File.expand_path(
-    File.join('..', 'Flutter', 'Generated.xcconfig'),
-    __FILE__,
-  )
-  unless File.exist?(generated_xcode_build_settings_path)
-    raise "#{generated_xcode_build_settings_path} must exist. Run flutter pub get first."
-  end
-
-  File.foreach(generated_xcode_build_settings_path) do |line|
-    matches = line.match(/FLUTTER_ROOT\=(.*)/)
-    return matches[1].strip if matches
-  end
-  raise 'FLUTTER_ROOT not found in Generated.xcconfig. Run flutter pub get first.'
-end
-
-require File.expand_path(
-  File.join('packages', 'flutter_tools', 'bin', 'podhelper'),
-  flutter_root,
-)
-
-flutter_ios_podfile_setup
-
-target 'Runner' do
-  use_frameworks!
-  use_modular_headers!
-
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-
-  target 'RunnerTests' do
-    inherit! :search_paths
-  end
-end
-
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
-
-    target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
-    end
-  end
-end
-</file>
-
 <file path="ios/Runner.xcodeproj/project.pbxproj">
 // !$*UTF8*$!
 {
@@ -3530,93 +3478,8 @@ You can also do it by opening your Flutter project's Xcode project with `open io
 </plist>
 </file>
 
-<file path="ios/Runner/Info.plist">
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Cacau da Neta</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>cacau_da_neta</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UISceneConfigurations</key>
-		<dict>
-			<key>UIWindowSceneSessionRoleApplication</key>
-			<array>
-				<dict>
-					<key>UISceneClassName</key>
-					<string>UIWindowScene</string>
-					<key>UISceneConfigurationName</key>
-					<string>flutter</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-					<key>UISceneStoryboardFile</key>
-					<string>Main</string>
-				</dict>
-			</array>
-		</dict>
-	</dict>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UIRequiresFullScreen</key>
-	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
-</dict>
-</plist>
-</file>
-
 <file path="ios/Runner/Runner-Bridging-Header.h">
 #import "GeneratedPluginRegistrant.h"
-</file>
-
-<file path="ios/Runner/SceneDelegate.swift">
-import Flutter
-import UIKit
-
-class SceneDelegate: FlutterSceneDelegate {
-
-}
 </file>
 
 <file path="ios/RunnerTests/RunnerTests.swift">
@@ -4727,60 +4590,6 @@ class XlsxImportService {
       mensagensErro: mensagensErro,
     );
   }
-}
-</file>
-
-<file path="lib/firebase_options.dart">
-import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
-import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
-
-class DefaultFirebaseOptions {
-  static FirebaseOptions get currentPlatform {
-    if (kIsWeb) {
-      return web;
-    }
-
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        return android;
-      case TargetPlatform.iOS:
-        return ios;
-      case TargetPlatform.macOS:
-      case TargetPlatform.windows:
-      case TargetPlatform.linux:
-      case TargetPlatform.fuchsia:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions are not configured for this platform.',
-        );
-    }
-  }
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'PLACEHOLDER',
-    appId: 'PLACEHOLDER',
-    messagingSenderId: 'PLACEHOLDER',
-    projectId: 'PLACEHOLDER',
-    storageBucket: 'PLACEHOLDER',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'PLACEHOLDER',
-    appId: 'PLACEHOLDER',
-    messagingSenderId: 'PLACEHOLDER',
-    projectId: 'PLACEHOLDER',
-    storageBucket: 'PLACEHOLDER',
-    iosBundleId: 'PLACEHOLDER',
-  );
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'PLACEHOLDER',
-    appId: 'PLACEHOLDER',
-    messagingSenderId: 'PLACEHOLDER',
-    projectId: 'PLACEHOLDER',
-    authDomain: 'PLACEHOLDER',
-    storageBucket: 'PLACEHOLDER',
-  );
 }
 </file>
 
@@ -7755,234 +7564,6 @@ class _ImagePlaceholder extends StatelessWidget {
         'assets/images/Logomarca com nome.jpeg',
         height: 32,
         opacity: const AlwaysStoppedAnimation(0.3),
-      ),
-    );
-  }
-}
-</file>
-
-<file path="lib/presentation/screens/home_screen.dart">
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/auth_provider.dart';
-import '../providers/cart_provider.dart';
-import '../providers/user_provider.dart';
-import 'account/account_screen.dart';
-import 'admin/admin_panel_screen.dart';
-import 'auth_screen.dart';
-import 'cart/cart_screen.dart';
-import 'orders/my_orders_screen.dart';
-import 'products/product_list_screen.dart';
-
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
-    final currentUser = ref.watch(currentUserProfileProvider);
-    final cartCount = ref.watch(cartProvider).totalItems;
-    final isAuthenticated = authState.when(
-      data: (user) => user != null,
-      loading: () => false,
-      error: (_, _) => false,
-    );
-    final isMaster = currentUser.when(
-      data: (user) => user?.isMaster ?? false,
-      loading: () => false,
-      error: (_, _) => false,
-    );
-    final userName = currentUser.when(
-      data: (user) => user?.name ?? '',
-      loading: () => '',
-      error: (_, _) => '',
-    );
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cacau da Neta'),
-        actions: [
-          Badge(
-            label: Text('$cartCount'),
-            isLabelVisible: cartCount > 0,
-            child: IconButton(
-              tooltip: 'Carrinho',
-              icon: const Icon(Icons.shopping_cart_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const CartScreen()),
-                );
-              },
-            ),
-          ),
-          if (isMaster)
-            IconButton(
-              tooltip: 'Painel Admin',
-              icon: const Icon(Icons.admin_panel_settings_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AdminPanelScreen()),
-                );
-              },
-            ),
-          IconButton(
-            tooltip: isAuthenticated ? 'Sair' : 'Entrar',
-            icon: Icon(isAuthenticated ? Icons.logout : Icons.login),
-            onPressed: () async {
-              if (!isAuthenticated) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AuthScreen()),
-                );
-                return;
-              }
-              await ref.read(authServiceProvider).signOut();
-            },
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 8),
-              Image.asset('assets/images/Logomarca com nome.jpeg', height: 100),
-              const SizedBox(height: 12),
-              const Text(
-                'Cacau da Neta',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                isAuthenticated && userName.isNotEmpty
-                    ? 'Olá, $userName!'
-                    : 'Explore os produtos. O login será exigido ao comprar.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 32),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  children: [
-                    _MenuCard(
-                      icon: Icons.inventory_2_outlined,
-                      label: 'Ver\nProdutos',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ProductListScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    _MenuCard(
-                      icon: Icons.shopping_cart_outlined,
-                      label: cartCount > 0
-                          ? 'Carrinho\n($cartCount)'
-                          : 'Carrinho',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const CartScreen()),
-                        );
-                      },
-                    ),
-                    _MenuCard(
-                      icon: isAuthenticated
-                          ? Icons.person_outline
-                          : Icons.login,
-                      label: isAuthenticated
-                          ? 'Minha\nConta'
-                          : 'Entrar /\nCriar conta',
-                      onTap: () {
-                        if (!isAuthenticated) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const AuthScreen(),
-                            ),
-                          );
-                          return;
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const AccountScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    if (isAuthenticated)
-                      _MenuCard(
-                        icon: Icons.receipt_long_outlined,
-                        label: 'Meus\nPedidos',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const MyOrdersScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    if (isMaster)
-                      _MenuCard(
-                        icon: Icons.admin_panel_settings_outlined,
-                        label: 'Administração',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const AdminPanelScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MenuCard extends StatelessWidget {
-  const _MenuCard({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 48),
-            const SizedBox(height: 12),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.w600, height: 1.3),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -13662,6 +13243,331 @@ flutter {
 }
 </file>
 
+<file path="ios/Podfile">
+platform :ios, '15.5'
+
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(
+    File.join('..', 'Flutter', 'Generated.xcconfig'),
+    __FILE__,
+  )
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. Run flutter pub get first."
+  end
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise 'FLUTTER_ROOT not found in Generated.xcconfig. Run flutter pub get first.'
+end
+
+require File.expand_path(
+  File.join('packages', 'flutter_tools', 'bin', 'podhelper'),
+  flutter_root,
+)
+
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
+      config.build_settings['INFOPLIST_KEY_NSPhotoLibraryUsageDescription'] = 'Necessário para selecionar fotos dos produtos.'
+      config.build_settings['INFOPLIST_KEY_NSCameraUsageDescription'] = 'Necessário para fotografar produtos.'
+      config.build_settings['INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription'] = 'Necessário para salvar fotos dos produtos.'
+    end
+  end
+end
+</file>
+
+<file path="ios/Runner/AppDelegate.swift">
+import Flutter
+import UIKit
+
+@main
+@objc class AppDelegate: FlutterAppDelegate {
+  override func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    GeneratedPluginRegistrant.register(with: self)
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+}
+</file>
+
+<file path="ios/Runner/Runner.entitlements">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+</dict>
+</plist>
+</file>
+
+<file path="ios/Runner/SceneDelegate.swift">
+import Flutter
+import UIKit
+
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+  var window: UIWindow?
+}
+</file>
+
+<file path="lib/presentation/screens/home_screen.dart">
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/auth_provider.dart';
+import '../providers/cart_provider.dart';
+import '../providers/user_provider.dart';
+import 'account/account_screen.dart';
+import 'admin/admin_panel_screen.dart';
+import 'auth_screen.dart';
+import 'cart/cart_screen.dart';
+import 'orders/my_orders_screen.dart';
+import 'products/product_list_screen.dart';
+
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
+    final currentUser = ref.watch(currentUserProfileProvider);
+    final cartCount = ref.watch(cartProvider).totalItems;
+    final isAuthenticated = authState.when(
+      data: (user) => user != null,
+      loading: () => false,
+      error: (_, _) => false,
+    );
+    final isMaster = currentUser.when(
+      data: (user) => user?.isMaster ?? false,
+      loading: () => false,
+      error: (_, _) => false,
+    );
+    final userName = currentUser.when(
+      data: (user) => user?.name ?? '',
+      loading: () => '',
+      error: (_, _) => '',
+    );
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Cacau da Neta'),
+        actions: [
+          Badge(
+            label: Text('$cartCount'),
+            isLabelVisible: cartCount > 0,
+            child: IconButton(
+              tooltip: 'Carrinho',
+              icon: const Icon(Icons.shopping_cart_outlined),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CartScreen()),
+                );
+              },
+            ),
+          ),
+          if (isMaster)
+            IconButton(
+              tooltip: 'Painel Admin',
+              icon: const Icon(Icons.admin_panel_settings_outlined),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AdminPanelScreen()),
+                );
+              },
+            ),
+          IconButton(
+            tooltip: isAuthenticated ? 'Sair' : 'Entrar',
+            icon: Icon(isAuthenticated ? Icons.logout : Icons.login),
+            onPressed: () async {
+              if (!isAuthenticated) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AuthScreen()),
+                );
+                return;
+              }
+              await ref.read(authServiceProvider).signOut();
+            },
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 8),
+              Image.asset('assets/images/logomarca.png', height: 100),
+              const SizedBox(height: 12),
+              const Text(
+                'Cacau da Neta',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                isAuthenticated && userName.isNotEmpty
+                    ? 'Olá, $userName!'
+                    : 'Explore os produtos. O login será exigido ao comprar.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 32),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  children: [
+                    _MenuCard(
+                      icon: Icons.inventory_2_outlined,
+                      label: 'Ver\nProdutos',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ProductListScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _MenuCard(
+                      icon: Icons.shopping_cart_outlined,
+                      label: cartCount > 0
+                          ? 'Carrinho\n($cartCount)'
+                          : 'Carrinho',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const CartScreen()),
+                        );
+                      },
+                    ),
+                    _MenuCard(
+                      icon: isAuthenticated
+                          ? Icons.person_outline
+                          : Icons.login,
+                      label: isAuthenticated
+                          ? 'Minha\nConta'
+                          : 'Entrar /\nCriar conta',
+                      onTap: () {
+                        if (!isAuthenticated) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AuthScreen(),
+                            ),
+                          );
+                          return;
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AccountScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    if (isAuthenticated)
+                      _MenuCard(
+                        icon: Icons.receipt_long_outlined,
+                        label: 'Meus\nPedidos',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const MyOrdersScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    if (isMaster)
+                      _MenuCard(
+                        icon: Icons.admin_panel_settings_outlined,
+                        label: 'Administração',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AdminPanelScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MenuCard extends StatelessWidget {
+  const _MenuCard({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 48),
+            const SizedBox(height: 12),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.w600, height: 1.3),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+</file>
+
 <file path="android/app/google-services_PetJoy.json">
 {
   "project_info": {
@@ -13759,96 +13665,76 @@ flutter {
 }
 </file>
 
-<file path="ios/Runner/AppDelegate.swift">
-import Flutter
-import UIKit
-
-@main
-@objc class AppDelegate: FlutterAppDelegate {
-  override func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-  ) -> Bool {
-    GeneratedPluginRegistrant.register(with: self)
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-}
-</file>
-
-<file path="ios/Runner/Runner.entitlements">
+<file path="ios/Runner/Info.plist">
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>com.apple.developer.applesignin</key>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Cacau da Neta</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Cacau da Neta</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>Default</string>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Necessário para selecionar fotos dos produtos.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Necessário para fotografar produtos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Necessário para salvar fotos dos produtos.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.594909165569-5km60h0hgg61su3ar2p7efd0ouqcjst5</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>
-</file>
-
-<file path="pubspec.yaml">
-name: cacau_da_neta
-description: "Loja online Cacau da Neta"
-publish_to: 'none'
-
-version: 1.0.0+1
-
-environment:
-  sdk: ^3.11.0
-
-dependencies:
-  flutter:
-    sdk: flutter
-
-  # Firebase
-  firebase_core: ^4.4.0
-  cloud_firestore: ^6.1.2
-  firebase_auth: ^6.2.0
-  firebase_storage: ^13.0.6
-  cloud_functions: ^6.0.7
-
-  # State Management
-  flutter_riverpod: ^2.4.0
-
-  # UI
-  google_fonts: ^6.1.0
-
-  # Date/Time
-  intl: ^0.19.0
-
-  # Utilities
-  uuid: ^4.0.0
-
-  # Local Storage
-
-  cupertino_icons: ^1.0.8
-
-  image_picker: ^1.1.2
-
-  # Importação de planilha
-  excel: ^4.0.6
-  file_picker: ^8.1.2
-  sign_in_with_apple: ^8.1.0
-  firebase_messaging: ^16.3.0
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
-  flutter_launcher_icons: ^0.14.1
-
-flutter:
-  config:
-    enable-swift-package-manager: false
-  uses-material-design: true
-  assets:
-    - assets/images/
-flutter_launcher_icons:
-  android: true
-  ios: true
-  image_path: "assets/images/logomarca.png"
 </file>
 
 <file path="URL do webhook do MercadoPago.txt">
@@ -13921,6 +13807,55 @@ functions/node_modules/
 "android/app/google-servicesOLD.json" 
 "android/app/google-services_PetJoy.json" 
 "URL do webhook do MercadoPago.txt"
+</file>
+
+<file path="pubspec.yaml">
+name: cacau_da_neta
+description: "Loja online Cacau da Neta"
+publish_to: 'none'
+version: 1.0.2+3
+environment:
+  sdk: ^3.11.0
+dependencies:
+  flutter:
+    sdk: flutter
+  # Firebase
+  firebase_core: ^4.4.0
+  cloud_firestore: ^6.1.2
+  firebase_auth: ^6.2.0
+  firebase_storage: ^13.0.6
+  cloud_functions: ^6.0.7
+  # State Management
+  flutter_riverpod: ^2.4.0
+  # UI
+  google_fonts: ^6.1.0
+  # Date/Time
+  intl: ^0.19.0
+  # Utilities
+  uuid: ^4.0.0
+  # Local Storage
+  cupertino_icons: ^1.0.8
+  image_picker: ^1.1.2
+  # Importação de planilha
+  excel: ^4.0.6
+  file_picker: ^8.1.2
+  sign_in_with_apple: ^8.1.0
+  firebase_messaging: ^16.3.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.1
+flutter:
+  config:
+    enable-swift-package-manager: false
+  uses-material-design: true
+  assets:
+    - assets/images/
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logomarca.png"
 </file>
 
 </files>

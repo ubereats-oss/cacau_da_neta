@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 
@@ -46,6 +47,10 @@ class XlsxImportService {
   ///   Coluna D: Categoria (ex: Nibs | Chá | Amêndoas | Geral)
   Future<XlsxImportResult> importar(File arquivo) async {
     final bytes = await arquivo.readAsBytes();
+    return importarBytes(bytes);
+  }
+
+  Future<XlsxImportResult> importarBytes(Uint8List bytes) async {
     final workbook = Excel.decodeBytes(bytes);
     final sheetName = workbook.sheets.keys.first;
     final sheet = workbook.sheets[sheetName]!;

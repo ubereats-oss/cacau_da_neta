@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/product_model.dart';
@@ -117,11 +118,17 @@ class ProductActions {
     required bool isActive,
     required bool isFeatured,
     File? imageFile,
+    Uint8List? imageBytes,
   }) async {
     var imageUrl = '';
-    if (imageFile != null) {
-      final fileName =
-          '${DateTime.now().millisecondsSinceEpoch}_${_sanitizeFileName(name)}.jpg';
+    final fileName =
+        '${DateTime.now().millisecondsSinceEpoch}_${_sanitizeFileName(name)}.jpg';
+    if (imageBytes != null) {
+      imageUrl = await _imageUploadService.uploadProductImageBytes(
+        bytes: imageBytes,
+        fileName: fileName,
+      );
+    } else if (imageFile != null) {
       imageUrl = await _imageUploadService.uploadProductImage(
         file: imageFile,
         fileName: fileName,
@@ -138,14 +145,21 @@ class ProductActions {
     );
     await _repository.createProduct(product);
   }
+
   Future<void> updateProduct({
     required ProductModel product,
     File? newImageFile,
+    Uint8List? newImageBytes,
   }) async {
     var imageUrl = product.imageUrl;
-    if (newImageFile != null) {
-      final fileName =
-          '${DateTime.now().millisecondsSinceEpoch}_${_sanitizeFileName(product.name)}.jpg';
+    final fileName =
+        '${DateTime.now().millisecondsSinceEpoch}_${_sanitizeFileName(product.name)}.jpg';
+    if (newImageBytes != null) {
+      imageUrl = await _imageUploadService.uploadProductImageBytes(
+        bytes: newImageBytes,
+        fileName: fileName,
+      );
+    } else if (newImageFile != null) {
       imageUrl = await _imageUploadService.uploadProductImage(
         file: newImageFile,
         fileName: fileName,

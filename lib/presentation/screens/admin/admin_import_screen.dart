@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,28 +19,48 @@ class _AdminImportScreenState extends ConsumerState<AdminImportScreen> {
   bool _isLoading = false;
   String? _arquivoNome;
   File? _arquivoSelecionado;
+  Uint8List? _arquivoBytesWeb;
   XlsxImportResult? _resultado;
   Future<void> _selecionarArquivo() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['xlsx'],
+      withData: kIsWeb,
     );
-    if (result == null || result.files.single.path == null) return;
-    setState(() {
-      _arquivoSelecionado = File(result.files.single.path!);
-      _arquivoNome = result.files.single.name;
-      _resultado = null;
-    });
+    if (result == null) return;
+    if (kIsWeb) {
+      final bytes = result.files.single.bytes;
+      if (bytes == null) return;
+      setState(() {
+        _arquivoBytesWeb = bytes;
+        _arquivoSelecionado = null;
+        _arquivoNome = result.files.single.name;
+        _resultado = null;
+      });
+    } else {
+      if (result.files.single.path == null) return;
+      setState(() {
+        _arquivoSelecionado = File(result.files.single.path!);
+        _arquivoBytesWeb = null;
+        _arquivoNome = result.files.single.name;
+        _resultado = null;
+      });
+    }
   }
 
   Future<void> _importar() async {
-    if (_arquivoSelecionado == null) return;
+    if (_arquivoSelecionado == null && _arquivoBytesWeb == null) return;
     setState(() {
       _isLoading = true;
       _resultado = null;
     });
     try {
-      final resultado = await _service.importar(_arquivoSelecionado!);
+      final XlsxImportResult resultado;
+      if (kIsWeb && _arquivoBytesWeb != null) {
+        resultado = await _service.importarBytes(_arquivoBytesWeb!);
+      } else {
+        resultado = await _service.importar(_arquivoSelecionado!);
+      }
       setState(() => _resultado = resultado);
     } catch (e) {
       setState(() {
@@ -139,7 +161,7 @@ class _AdminImportScreenState extends ConsumerState<AdminImportScreen> {
             const SizedBox(height: 24),
             // Botão importar
             FilledButton.icon(
-              onPressed: (_arquivoSelecionado == null || _isLoading)
+              onPressed: ((_arquivoSelecionado == null && _arquivoBytesWeb == null) || _isLoading)
                   ? null
                   : _importar,
               icon: _isLoading
