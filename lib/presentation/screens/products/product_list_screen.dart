@@ -224,26 +224,34 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                             ],
                           ),
                         )
-                      : GridView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(12),
-                          itemCount:
-                              filtered.length +
-                              (pageState.isLoading &&
-                                      pageState.products.isNotEmpty
-                                  ? 1
-                                  : (!pageState.hasMore &&
-                                            pageState.products.isNotEmpty
-                                        ? 1
-                                        : 0)),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
-                                childAspectRatio: 0.68,
-                              ),
-                          itemBuilder: (context, index) {
+                      : LayoutBuilder(
+                          builder: (context, constraints) {
+                            final width = constraints.maxWidth;
+                            final crossAxisCount = width >= 1100
+                                ? 4
+                                : width >= 700
+                                    ? 3
+                                    : 2;
+                            return GridView.builder(
+                              controller: _scrollController,
+                              padding: const EdgeInsets.all(12),
+                              itemCount:
+                                  filtered.length +
+                                  (pageState.isLoading &&
+                                          pageState.products.isNotEmpty
+                                      ? 1
+                                      : (!pageState.hasMore &&
+                                                pageState.products.isNotEmpty
+                                            ? 1
+                                            : 0)),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: crossAxisCount,
+                                    mainAxisSpacing: 12,
+                                    crossAxisSpacing: 12,
+                                    childAspectRatio: 0.68,
+                                  ),
+                              itemBuilder: (context, index) {
                             if (index == filtered.length) {
                               if (pageState.isLoading) {
                                 return const Center(
@@ -279,6 +287,8 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                                   ),
                                 );
                               },
+                            );
+                          },
                             );
                           },
                         ),

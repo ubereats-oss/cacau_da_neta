@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/constants/app_dimensions.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/user_provider.dart';
@@ -78,117 +79,176 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 8),
-              Image.asset('assets/images/logomarca.png', height: 100),
-              const SizedBox(height: 12),
-              const Text(
-                'Cacau da Neta',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                isAuthenticated && userName.isNotEmpty
-                    ? 'Olá, $userName!'
-                    : 'Explore os produtos. O login será exigido ao comprar.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 32),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  children: [
-                    _MenuCard(
-                      icon: Icons.inventory_2_outlined,
-                      label: 'Ver\nProdutos',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ProductListScreen(),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWeb = constraints.maxWidth >= AppDimensions.webBreakpoint;
+
+            if (isWeb) {
+              // ── Web layout ──────────────────────────────────────────────
+              return Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 8),
+                        Image.asset(
+                          'assets/images/logomarca.png',
+                          height: 80,
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Cacau da Neta',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
                           ),
-                        );
-                      },
-                    ),
-                    _MenuCard(
-                      icon: Icons.shopping_cart_outlined,
-                      label: cartCount > 0
-                          ? 'Carrinho\n($cartCount)'
-                          : 'Carrinho',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const CartScreen()),
-                        );
-                      },
-                    ),
-                    _MenuCard(
-                      icon: isAuthenticated
-                          ? Icons.person_outline
-                          : Icons.login,
-                      label: isAuthenticated
-                          ? 'Minha\nConta'
-                          : 'Entrar /\nCriar conta',
-                      onTap: () {
-                        if (!isAuthenticated) {
-                          Navigator.push(
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          isAuthenticated && userName.isNotEmpty
+                              ? 'Olá, $userName!'
+                              : 'Explore os produtos. O login será exigido ao comprar.',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 32),
+                        GridView.count(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: double.infinity / 120,
+                          children: _buildMenuCards(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => const AuthScreen(),
-                            ),
-                          );
-                          return;
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const AccountScreen(),
+                            isAuthenticated: isAuthenticated,
+                            isMaster: isMaster,
+                            cartCount: cartCount,
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
-                    if (isAuthenticated)
-                      _MenuCard(
-                        icon: Icons.receipt_long_outlined,
-                        label: 'Meus\nPedidos',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const MyOrdersScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    if (isMaster)
-                      _MenuCard(
-                        icon: Icons.admin_panel_settings_outlined,
-                        label: 'Administração',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const AdminPanelScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                  ],
+                  ),
                 ),
+              );
+            }
+
+            // ── Mobile layout (original) ────────────────────────────────
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 8),
+                  Image.asset('assets/images/logomarca.png', height: 100),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Cacau da Neta',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    isAuthenticated && userName.isNotEmpty
+                        ? 'Olá, $userName!'
+                        : 'Explore os produtos. O login será exigido ao comprar.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 32),
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      children: _buildMenuCards(
+                        context,
+                        isAuthenticated: isAuthenticated,
+                        isMaster: isMaster,
+                        cartCount: cartCount,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
+  }
+
+  List<Widget> _buildMenuCards(
+    BuildContext context, {
+    required bool isAuthenticated,
+    required bool isMaster,
+    required int cartCount,
+  }) {
+    return [
+      _MenuCard(
+        icon: Icons.inventory_2_outlined,
+        label: 'Ver\nProdutos',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ProductListScreen()),
+          );
+        },
+      ),
+      _MenuCard(
+        icon: Icons.shopping_cart_outlined,
+        label: cartCount > 0 ? 'Carrinho\n($cartCount)' : 'Carrinho',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CartScreen()),
+          );
+        },
+      ),
+      _MenuCard(
+        icon: isAuthenticated ? Icons.person_outline : Icons.login,
+        label: isAuthenticated ? 'Minha\nConta' : 'Entrar /\nCriar conta',
+        onTap: () {
+          if (!isAuthenticated) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AuthScreen()),
+            );
+            return;
+          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AccountScreen()),
+          );
+        },
+      ),
+      if (isAuthenticated)
+        _MenuCard(
+          icon: Icons.receipt_long_outlined,
+          label: 'Meus\nPedidos',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const MyOrdersScreen()),
+            );
+          },
+        ),
+      if (isMaster)
+        _MenuCard(
+          icon: Icons.admin_panel_settings_outlined,
+          label: 'Administração',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AdminPanelScreen()),
+            );
+          },
+        ),
+    ];
   }
 }
 

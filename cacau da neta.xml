@@ -169,6 +169,7 @@ lib/data/repositories/product_repository.dart
 lib/data/repositories/user_repository.dart
 lib/data/services/image_upload_service.dart
 lib/data/services/xlsx_import_service.dart
+lib/firebase_options.dart
 lib/main.dart
 lib/presentation/providers/auth_provider.dart
 lib/presentation/providers/cart_provider.dart
@@ -243,6 +244,7 @@ test/widget_test.dart
 token Mercado Pago.txt
 URL do webhook do MercadoPago.txt
 web/favicon.png
+web/firebase-messaging-sw.js
 web/icons/Icon-192.png
 web/icons/Icon-512.png
 web/icons/Icon-maskable-192.png
@@ -271,10 +273,6 @@ windows/runner/win32_window.h
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path="token Mercado Pago.txt">
-BetaFezCacaudaNetaem09-06-2026!!##$$
-</file>
 
 <file path=".metadata">
 # This file tracks properties of this Flutter project.
@@ -1905,10 +1903,6 @@ with open(output, "w", encoding="utf-8") as out:
 
 print(f"  Auditoria gerada: {output}")
 print(f"  Total de arquivos exportados: {file_count}")
-</file>
-
-<file path="firebase.json">
-{"flutter":{"platforms":{"android":{"default":{"projectId":"cacau-da-neta","appId":"1:594909165569:android:abefc81b55f93a6cb7a800","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"cacau-da-neta","configurations":{"android":"1:594909165569:android:abefc81b55f93a6cb7a800","ios":"1:594909165569:ios:5e8d2ecfc4bf19c2b7a800","macos":"1:594909165569:ios:624afc01acf18e6cb7a800","web":"1:594909165569:web:89e6ae1c47aeba08b7a800","windows":"1:594909165569:web:e3c38b76be3093ccb7a800"}}}}},"functions":[{"source":"functions","codebase":"default","disallowLegacyRuntimeConfig":true,"ignore":["node_modules",".git","firebase-debug.log","firebase-debug.*.log","*.local"]}],"firestore":{"database":"(default)","location":"southamerica-east1","rules":"firestore.rules","indexes":"firestore.indexes.json"}}
 </file>
 
 <file path="firestore.indexes.json">
@@ -4413,183 +4407,54 @@ class UserRepository {
 }
 </file>
 
-<file path="lib/data/services/image_upload_service.dart">
-import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
-class ImageUploadService {
-  ImageUploadService({
-    FirebaseStorage? storage,
-  }) : _storage = storage ?? FirebaseStorage.instance;
-  final FirebaseStorage _storage;
-  Future<String> uploadProductImage({
-    required File file,
-    required String fileName,
-  }) async {
-    final ref = _storage.ref().child('products').child(fileName);
-    final task = await ref.putFile(file);
-    return task.ref.getDownloadURL();
-  }
-}
-</file>
+<file path="lib/firebase_options.dart">
+import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-<file path="lib/data/services/xlsx_import_service.dart">
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:excel/excel.dart';
-
-class XlsxImportResult {
-  const XlsxImportResult({
-    required this.criados,
-    required this.atualizados,
-    required this.erros,
-    required this.mensagensErro,
-  });
-  final int criados;
-  final int atualizados;
-  final int erros;
-  final List<String> mensagensErro;
-  bool get sucesso => erros == 0;
-  int get total => criados + atualizados;
-}
-
-class _ProdutoXlsx {
-  const _ProdutoXlsx({
-    required this.nome,
-    required this.quantidade,
-    required this.preco,
-    required this.categoria,
-  });
-  final String nome;
-  final String quantidade;
-  final double preco;
-  final String categoria;
-}
-
-class XlsxImportService {
-  XlsxImportService({FirebaseFirestore? firestore})
-    : _db = firestore ?? FirebaseFirestore.instance;
-  final FirebaseFirestore _db;
-
-  /// Lê o arquivo .xlsx e importa os produtos para o Firestore.
-  ///
-  /// Formato esperado da planilha:
-  ///   Linha 1: cabeçalho (Nome | Quantity | Preço | Categoria)
-  ///   Linha 2+: dados
-  ///   Coluna A: Nome
-  ///   Coluna B: Quantity (ex: 250g)
-  ///   Coluna C: Preço (número)
-  ///   Coluna D: Categoria (ex: Nibs | Chá | Amêndoas | Geral)
-  Future<XlsxImportResult> importar(File arquivo) async {
-    final bytes = await arquivo.readAsBytes();
-    final workbook = Excel.decodeBytes(bytes);
-    final sheetName = workbook.sheets.keys.first;
-    final sheet = workbook.sheets[sheetName]!;
-    final produtos = _lerProdutos(sheet);
-    if (produtos.isEmpty) {
-      return const XlsxImportResult(
-        criados: 0,
-        atualizados: 0,
-        erros: 1,
-        mensagensErro: ['Nenhum produto encontrado na planilha.'],
-      );
+class DefaultFirebaseOptions {
+  static FirebaseOptions get currentPlatform {
+    if (kIsWeb) return web;
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return android;
+      case TargetPlatform.iOS:
+        return ios;
+      case TargetPlatform.macOS:
+      case TargetPlatform.windows:
+      case TargetPlatform.linux:
+      case TargetPlatform.fuchsia:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions are not configured for this platform.',
+        );
     }
-    return _salvarNoBanco(produtos);
   }
 
-  List<_ProdutoXlsx> _lerProdutos(Sheet sheet) {
-    final produtos = <_ProdutoXlsx>[];
-    // Linha 0 = cabeçalho, começa na linha 1
-    for (int i = 1; i < sheet.maxRows; i++) {
-      final row = sheet.row(i);
-      final nome = _cellString(row, 0);
-      final quantidade = _cellString(row, 1);
-      final precoRaw = _cellString(row, 2);
-      final categoria = _cellString(row, 3);
-      if (nome.isEmpty) continue;
-      final preco =
-          double.tryParse(
-            precoRaw
-                .replaceAll('R\$', '')
-                .replaceAll('.', '')
-                .replaceAll(',', '.')
-                .trim(),
-          ) ??
-          0;
-      if (preco <= 0) continue;
-      produtos.add(
-        _ProdutoXlsx(
-          nome: nome,
-          quantidade: quantidade,
-          preco: preco,
-          categoria: categoria,
-        ),
-      );
-    }
-    return produtos;
-  }
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyC06uffq_fiiZfBlkv19o5uMVggZ7SoJpI',
+    appId: '1:594909165569:android:abefc81b55f93a6cb7a800',
+    messagingSenderId: '594909165569',
+    projectId: 'cacau-da-neta',
+    storageBucket: 'cacau-da-neta.firebasestorage.app',
+  );
 
-  String _cellString(List<Data?> row, int index) {
-    if (index >= row.length) return '';
-    final cell = row[index];
-    if (cell == null || cell.value == null) return '';
-    return cell.value.toString().trim();
-  }
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBXx3V2Ai8f--lxakiI0HdTf9pIhT2aRko',
+    appId: '1:594909165569:ios:5e8d2ecfc4bf19c2b7a800',
+    messagingSenderId: '594909165569',
+    projectId: 'cacau-da-neta',
+    storageBucket: 'cacau-da-neta.firebasestorage.app',
+    iosBundleId: 'com.cacau.daneta',
+  );
 
-  String _mapCategoria(String categoria) {
-    return categoria.isNotEmpty ? categoria : 'Geral';
-  }
-
-  Future<XlsxImportResult> _salvarNoBanco(List<_ProdutoXlsx> produtos) async {
-    final colecao = _db.collection('products');
-    int criados = 0;
-    int atualizados = 0;
-    int erros = 0;
-    final mensagensErro = <String>[];
-    for (final p in produtos) {
-      try {
-        final descricao = p.quantidade.isNotEmpty
-            ? 'Embalagem: ${p.quantidade}'
-            : '';
-        final categoria = _mapCategoria(p.categoria);
-        final agora = FieldValue.serverTimestamp();
-        final snapshot = await colecao
-            .where('name', isEqualTo: p.nome)
-            .where('description', isEqualTo: descricao)
-            .limit(1)
-            .get();
-        if (snapshot.docs.isNotEmpty) {
-          await snapshot.docs.first.reference.update({
-            'price': p.preco,
-            'category': categoria,
-            'updatedAt': agora,
-          });
-          atualizados++;
-        } else {
-          await colecao.add({
-            'name': p.nome,
-            'description': descricao,
-            'price': p.preco,
-            'category': categoria,
-            'imageUrl': '',
-            'isActive': true,
-            'isFeatured': false,
-            'createdAt': agora,
-            'updatedAt': agora,
-          });
-          criados++;
-        }
-      } catch (e) {
-        erros++;
-        mensagensErro.add('${p.nome}: ${e.toString()}');
-      }
-    }
-    return XlsxImportResult(
-      criados: criados,
-      atualizados: atualizados,
-      erros: erros,
-      mensagensErro: mensagensErro,
-    );
-  }
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBXx3V2Ai8f--lxakiI0HdTf9pIhT2aRko',
+    appId: '1:594909165569:web:89e6ae1c47aeba08b7a800',
+    messagingSenderId: '594909165569',
+    projectId: 'cacau-da-neta',
+    authDomain: 'cacau-da-neta.firebaseapp.com',
+    storageBucket: 'cacau-da-neta.firebasestorage.app',
+  );
 }
 </file>
 
@@ -4965,185 +4830,6 @@ class OrderActions {
 }
 </file>
 
-<file path="lib/presentation/providers/product_provider.dart">
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/product_model.dart';
-import '../../data/repositories/product_repository.dart';
-import '../../data/services/image_upload_service.dart';
-final productRepositoryProvider = Provider<ProductRepository>((ref) {
-  return ProductRepository();
-});
-final imageUploadServiceProvider = Provider<ImageUploadService>((ref) {
-  return ImageUploadService();
-});
-// Stream reativo — tela admin de produtos
-final allProductsProvider = StreamProvider<List<ProductModel>>((ref) {
-  return ref.read(productRepositoryProvider).watchAllProducts();
-});
-// ---- Paginação ----
-const int _kPageSize = 50;
-class ProductPageState {
-  const ProductPageState({
-    this.products = const [],
-    this.isLoading = false,
-    this.hasMore = true,
-    this.lastDoc,
-    this.error,
-  });
-  final List<ProductModel> products;
-  final bool isLoading;
-  final bool hasMore;
-  final DocumentSnapshot? lastDoc;
-  final String? error;
-  ProductPageState copyWith({
-    List<ProductModel>? products,
-    bool? isLoading,
-    bool? hasMore,
-    DocumentSnapshot? lastDoc,
-    String? error,
-    bool clearLastDoc = false,
-    bool clearError = false,
-  }) {
-    return ProductPageState(
-      products: products ?? this.products,
-      isLoading: isLoading ?? this.isLoading,
-      hasMore: hasMore ?? this.hasMore,
-      lastDoc: clearLastDoc ? null : (lastDoc ?? this.lastDoc),
-      error: clearError ? null : (error ?? this.error),
-    );
-  }
-}
-class ProductPaginationNotifier
-    extends StateNotifier<ProductPageState> {
-  ProductPaginationNotifier(this._repository)
-      : super(const ProductPageState()) {
-    fetchFirst();
-  }
-  final ProductRepository _repository;
-  Future<void> fetchFirst() async {
-    state = const ProductPageState(isLoading: true);
-    try {
-      final page = await _repository.getActiveProductsPage(
-        limit: _kPageSize,
-      );
-      state = ProductPageState(
-        products: page.products,
-        lastDoc: page.lastDoc,
-        hasMore: page.products.length >= _kPageSize,
-        isLoading: false,
-      );
-    } catch (e) {
-      state = ProductPageState(isLoading: false, error: e.toString());
-    }
-  }
-  Future<void> loadMore() async {
-    if (state.isLoading || !state.hasMore || state.lastDoc == null) return;
-    state = state.copyWith(isLoading: true);
-    try {
-      final page = await _repository.getActiveProductsPage(
-        limit: _kPageSize,
-        startAfter: state.lastDoc,
-      );
-      state = state.copyWith(
-        products: [...state.products, ...page.products],
-        lastDoc: page.lastDoc,
-        hasMore: page.products.length >= _kPageSize,
-        isLoading: false,
-        clearError: true,
-      );
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
-    }
-  }
-}
-final productPaginationProvider =
-    StateNotifierProvider<ProductPaginationNotifier, ProductPageState>(
-  (ref) => ProductPaginationNotifier(ref.read(productRepositoryProvider)),
-);
-// ---- Ações de escrita (admin) ----
-final productActionsProvider = Provider<ProductActions>((ref) {
-  return ProductActions(
-    repository: ref.read(productRepositoryProvider),
-    imageUploadService: ref.read(imageUploadServiceProvider),
-  );
-});
-class ProductActions {
-  const ProductActions({
-    required ProductRepository repository,
-    required ImageUploadService imageUploadService,
-  })  : _repository = repository,
-        _imageUploadService = imageUploadService;
-  final ProductRepository _repository;
-  final ImageUploadService _imageUploadService;
-  Future<void> createProduct({
-    required String name,
-    required String description,
-    required double price,
-    required String category,
-    required bool isActive,
-    required bool isFeatured,
-    File? imageFile,
-  }) async {
-    var imageUrl = '';
-    if (imageFile != null) {
-      final fileName =
-          '${DateTime.now().millisecondsSinceEpoch}_${_sanitizeFileName(name)}.jpg';
-      imageUrl = await _imageUploadService.uploadProductImage(
-        file: imageFile,
-        fileName: fileName,
-      );
-    }
-    final product = ProductModel.empty().copyWith(
-      name: name.trim(),
-      description: description.trim(),
-      price: price,
-      category: category.trim(),
-      imageUrl: imageUrl,
-      isActive: isActive,
-      isFeatured: isFeatured,
-    );
-    await _repository.createProduct(product);
-  }
-  Future<void> updateProduct({
-    required ProductModel product,
-    File? newImageFile,
-  }) async {
-    var imageUrl = product.imageUrl;
-    if (newImageFile != null) {
-      final fileName =
-          '${DateTime.now().millisecondsSinceEpoch}_${_sanitizeFileName(product.name)}.jpg';
-      imageUrl = await _imageUploadService.uploadProductImage(
-        file: newImageFile,
-        fileName: fileName,
-      );
-    }
-    await _repository.updateProduct(product.copyWith(imageUrl: imageUrl));
-  }
-  Future<void> setProductActive({
-    required String productId,
-    required bool isActive,
-  }) async {
-    await _repository.setProductActive(
-      productId: productId,
-      isActive: isActive,
-    );
-  }
-  Future<void> deleteProduct(String productId) async {
-    await _repository.deleteProduct(productId);
-  }
-  String _sanitizeFileName(String value) {
-    final normalized = value
-        .toLowerCase()
-        .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
-        .replaceAll(RegExp(r'_+'), '_')
-        .replaceAll(RegExp(r'^_|_$'), '');
-    return normalized.isEmpty ? 'produto' : normalized;
-  }
-}
-</file>
-
 <file path="lib/presentation/providers/user_provider.dart">
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/user_model.dart';
@@ -5332,320 +5018,6 @@ class _InfoTile extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-</file>
-
-<file path="lib/presentation/screens/admin/admin_import_screen.dart">
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../providers/user_provider.dart';
-import '../../../../data/services/xlsx_import_service.dart';
-
-class AdminImportScreen extends ConsumerStatefulWidget {
-  const AdminImportScreen({super.key});
-  @override
-  ConsumerState<AdminImportScreen> createState() => _AdminImportScreenState();
-}
-
-class _AdminImportScreenState extends ConsumerState<AdminImportScreen> {
-  final _service = XlsxImportService();
-  bool _isLoading = false;
-  String? _arquivoNome;
-  File? _arquivoSelecionado;
-  XlsxImportResult? _resultado;
-  Future<void> _selecionarArquivo() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['xlsx'],
-    );
-    if (result == null || result.files.single.path == null) return;
-    setState(() {
-      _arquivoSelecionado = File(result.files.single.path!);
-      _arquivoNome = result.files.single.name;
-      _resultado = null;
-    });
-  }
-
-  Future<void> _importar() async {
-    if (_arquivoSelecionado == null) return;
-    setState(() {
-      _isLoading = true;
-      _resultado = null;
-    });
-    try {
-      final resultado = await _service.importar(_arquivoSelecionado!);
-      setState(() => _resultado = resultado);
-    } catch (e) {
-      setState(() {
-        _resultado = XlsxImportResult(
-          criados: 0,
-          atualizados: 0,
-          erros: 1,
-          mensagensErro: [e.toString()],
-        );
-      });
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final currentUser = ref.watch(currentUserProfileProvider).value;
-    if (currentUser == null || !currentUser.isMaster) {
-      return const Scaffold(body: Center(child: Text('Acesso negado.')));
-    }
-    return Scaffold(
-      appBar: AppBar(title: const Text('Importar Planilha')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Instrução
-            Card(
-              color: AppColors.primary.withValues(alpha: 0.07),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: AppColors.primary,
-                          size: 20,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          'Formato esperado da planilha',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    _FormatRow(col: 'A', label: 'Nome do produto'),
-                    _FormatRow(col: 'B', label: 'Quantidade (ex: 250g)'),
-                    _FormatRow(col: 'C', label: 'Preço (número, ex: 20.90)'),
-                    _FormatRow(
-                      col: 'D',
-                      label: 'Categoria (ex: Nibs / Chá / Amêndoas / Geral)',
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Linha 1: cabeçalho  •  A partir da linha 2: dados',
-                      style: TextStyle(fontSize: 12, color: AppColors.grey600),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Seleção de arquivo
-            OutlinedButton.icon(
-              onPressed: _isLoading ? null : _selecionarArquivo,
-              icon: const Icon(Icons.upload_file_outlined),
-              label: const Text('Selecionar planilha .xlsx'),
-            ),
-            if (_arquivoNome != null) ...[
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.description_outlined,
-                    size: 18,
-                    color: AppColors.grey600,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      _arquivoNome!,
-                      style: const TextStyle(color: AppColors.grey700),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            const SizedBox(height: 24),
-            // Botão importar
-            FilledButton.icon(
-              onPressed: (_arquivoSelecionado == null || _isLoading)
-                  ? null
-                  : _importar,
-              icon: _isLoading
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.white,
-                      ),
-                    )
-                  : const Icon(Icons.cloud_upload_outlined),
-              label: Text(
-                _isLoading ? 'Importando...' : 'Importar para o banco',
-              ),
-            ),
-            // Resultado
-            if (_resultado != null) ...[
-              const SizedBox(height: 24),
-              _ResultadoCard(resultado: _resultado!),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FormatRow extends StatelessWidget {
-  const _FormatRow({required this.col, required this.label});
-  final String col;
-  final String label;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              col,
-              style: const TextStyle(
-                color: AppColors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 12,
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Text(label, style: const TextStyle(fontSize: 14)),
-        ],
-      ),
-    );
-  }
-}
-
-class _ResultadoCard extends StatelessWidget {
-  const _ResultadoCard({required this.resultado});
-  final XlsxImportResult resultado;
-  @override
-  Widget build(BuildContext context) {
-    final cor = resultado.sucesso ? AppColors.success : AppColors.error;
-    final icone = resultado.sucesso
-        ? Icons.check_circle_outline
-        : Icons.error_outline;
-    final titulo = resultado.sucesso
-        ? '${resultado.total} produto(s) importado(s) com sucesso!'
-        : 'Importação concluída com erros';
-    return Card(
-      color: cor.withValues(alpha: 0.08),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: cor.withValues(alpha: 0.3)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icone, color: cor),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    titulo,
-                    style: TextStyle(fontWeight: FontWeight.w700, color: cor),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _StatRow(
-              icon: Icons.add_circle_outline,
-              label: 'Criados',
-              value: resultado.criados,
-              color: AppColors.success,
-            ),
-            _StatRow(
-              icon: Icons.edit_outlined,
-              label: 'Atualizados',
-              value: resultado.atualizados,
-              color: AppColors.info,
-            ),
-            if (resultado.erros > 0) ...[
-              _StatRow(
-                icon: Icons.cancel_outlined,
-                label: 'Erros',
-                value: resultado.erros,
-                color: AppColors.error,
-              ),
-              const SizedBox(height: 8),
-              ...resultado.mensagensErro.map(
-                (msg) => Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    '• $msg',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.error,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StatRow extends StatelessWidget {
-  const _StatRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-  final IconData icon;
-  final String label;
-  final int value;
-  final Color color;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: color),
-          const SizedBox(width: 8),
-          Text(label, style: const TextStyle(color: AppColors.grey700)),
-          const Spacer(),
-          Text(
-            '$value',
-            style: TextStyle(fontWeight: FontWeight.w700, color: color),
           ),
         ],
       ),
@@ -6166,412 +5538,6 @@ class _PanelItem {
   final IconData icon;
   final String label;
   final Widget screen;
-}
-</file>
-
-<file path="lib/presentation/screens/admin/admin_products_screen.dart">
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../data/models/product_model.dart';
-import '../../providers/product_provider.dart';
-import '../../../core/extensions/format_extensions.dart';
-import '../../providers/user_provider.dart';
-
-class AdminProductsScreen extends ConsumerStatefulWidget {
-  const AdminProductsScreen({super.key});
-  @override
-  ConsumerState<AdminProductsScreen> createState() =>
-      _AdminProductsScreenState();
-}
-
-class _AdminProductsScreenState extends ConsumerState<AdminProductsScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _categoryController = TextEditingController();
-  bool _isActive = true;
-  bool _isFeatured = false;
-  bool _isSaving = false;
-  File? _selectedImage;
-  // Quando não-nulo, estamos editando um produto existente
-  ProductModel? _editingProduct;
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _descriptionController.dispose();
-    _priceController.dispose();
-    _categoryController.dispose();
-    super.dispose();
-  }
-
-  void _startEditing(ProductModel product) {
-    setState(() {
-      _editingProduct = product;
-      _nameController.text = product.name;
-      _descriptionController.text = product.description;
-      _priceController.text = product.price
-          .toStringAsFixed(2)
-          .replaceAll('.', ',');
-      _categoryController.text = product.category;
-      _isActive = product.isActive;
-      _isFeatured = product.isFeatured;
-      _selectedImage = null;
-    });
-    Scrollable.ensureVisible(
-      _formKey.currentContext ?? context,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
-  }
-
-  void _cancelEditing() {
-    setState(() {
-      _editingProduct = null;
-      _selectedImage = null;
-      _isActive = true;
-      _isFeatured = false;
-    });
-    _formKey.currentState?.reset();
-    _nameController.clear();
-    _descriptionController.clear();
-    _priceController.clear();
-    _categoryController.clear();
-  }
-
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final file = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 85,
-    );
-    if (file == null) return;
-    setState(() => _selectedImage = File(file.path));
-  }
-
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-    final rawPrice = _priceController.text.trim().replaceAll(',', '.');
-    final price = double.tryParse(rawPrice);
-    if (price == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Preço inválido.')));
-      return;
-    }
-    setState(() => _isSaving = true);
-    try {
-      final actions = ref.read(productActionsProvider);
-      if (_editingProduct != null) {
-        await actions.updateProduct(
-          product: _editingProduct!.copyWith(
-            name: _nameController.text.trim(),
-            description: _descriptionController.text.trim(),
-            price: price,
-            category: _categoryController.text.trim(),
-            isActive: _isActive,
-            isFeatured: _isFeatured,
-          ),
-          newImageFile: _selectedImage,
-        );
-      } else {
-        await actions.createProduct(
-          name: _nameController.text,
-          description: _descriptionController.text,
-          price: price,
-          category: _categoryController.text,
-          isActive: _isActive,
-          isFeatured: _isFeatured,
-          imageFile: _selectedImage,
-        );
-      }
-      if (!mounted) return;
-      _cancelEditing();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            _editingProduct != null
-                ? 'Produto atualizado com sucesso.'
-                : 'Produto cadastrado com sucesso.',
-          ),
-        ),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Erro ao salvar produto.')));
-    } finally {
-      if (mounted) setState(() => _isSaving = false);
-    }
-  }
-
-  Future<void> _confirmDelete(ProductModel product) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Excluir produto'),
-        content: Text(
-          'Excluir "${product.name}"? Esta ação não pode ser desfeita.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Excluir'),
-          ),
-        ],
-      ),
-    );
-    if (confirm != true) return;
-    try {
-      await ref.read(productActionsProvider).deleteProduct(product.id);
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Produto excluído.')));
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Erro ao excluir produto.')));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final currentUser = ref.watch(currentUserProfileProvider).value;
-    if (currentUser == null || !currentUser.isMaster) {
-      return const Scaffold(body: Center(child: Text('Acesso negado.')));
-    }
-    final productsAsync = ref.watch(allProductsProvider);
-    final isEditing = _editingProduct != null;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(isEditing ? 'Editar Produto' : 'Admin - Produtos'),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (isEditing)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.edit,
-                          size: 18,
-                          color: AppColors.primary,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Editando: ${_editingProduct!.name}',
-                            style: const TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: _cancelEditing,
-                          child: const Text('Cancelar edição'),
-                        ),
-                      ],
-                    ),
-                  ),
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Nome'),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Informe o nome do produto.';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _categoryController,
-                  decoration: const InputDecoration(labelText: 'Categoria'),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Informe a categoria.';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _priceController,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  decoration: const InputDecoration(labelText: 'Preço'),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Informe o preço.';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _descriptionController,
-                  maxLines: 4,
-                  decoration: const InputDecoration(labelText: 'Descrição'),
-                ),
-                const SizedBox(height: 12),
-                SwitchListTile(
-                  value: _isActive,
-                  title: const Text('Produto ativo'),
-                  onChanged: (value) => setState(() => _isActive = value),
-                ),
-                SwitchListTile(
-                  value: _isFeatured,
-                  title: const Text('Produto em destaque'),
-                  onChanged: (value) => setState(() => _isFeatured = value),
-                ),
-                const SizedBox(height: 12),
-                if (_selectedImage != null) ...[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      _selectedImage!,
-                      height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                ] else if (isEditing &&
-                    _editingProduct!.imageUrl.isNotEmpty) ...[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      _editingProduct!.imageUrl,
-                      height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      cacheWidth: 360,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Selecione uma nova foto para substituir.',
-                    style: TextStyle(fontSize: 12, color: AppColors.grey600),
-                  ),
-                  const SizedBox(height: 8),
-                ],
-                OutlinedButton(
-                  onPressed: _pickImage,
-                  child: Text(isEditing ? 'Trocar foto' : 'Selecionar foto'),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _isSaving ? null : _submit,
-                  child: _isSaving
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(
-                          isEditing ? 'Salvar alterações' : 'Cadastrar produto',
-                        ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          const Divider(),
-          const SizedBox(height: 12),
-          const Text(
-            'Produtos cadastrados',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 12),
-          productsAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (_, _) => const Text('Erro ao carregar produtos.'),
-            data: (products) {
-              if (products.isEmpty) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text('Nenhum produto cadastrado.'),
-                );
-              }
-              return Column(children: products.map(_buildProductTile).toList());
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProductTile(ProductModel product) {
-    final priceText = product.price.toBRL();
-    return Card(
-      child: ListTile(
-        leading: product.imageUrl.isNotEmpty
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  product.imageUrl,
-                  width: 52,
-                  height: 52,
-                  fit: BoxFit.cover,
-                  cacheWidth: 104,
-                  errorBuilder: (_, _, _) => SizedBox(
-                    width: 52,
-                    height: 52,
-                    child: Image.asset('assets/images/Logomarca com nome.jpeg'),
-                  ),
-                ),
-              )
-            : SizedBox(
-                width: 52,
-                height: 52,
-                child: Image.asset('assets/images/Logomarca com nome.jpeg'),
-              ),
-        title: Text(product.name),
-        subtitle: Text('${product.category} · $priceText'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Switch(
-              value: product.isActive,
-              onChanged: (value) {
-                ref
-                    .read(productActionsProvider)
-                    .setProductActive(productId: product.id, isActive: value);
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.edit_outlined, color: AppColors.primary),
-              onPressed: () => _startEditing(product),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete_outline, color: AppColors.error),
-              onPressed: () => _confirmDelete(product),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 </file>
 
@@ -11926,53 +10892,29 @@ void main() {
 }
 </file>
 
-<file path="web/index.html">
-<!DOCTYPE html>
-<html>
-<head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+<file path="token Mercado Pago.txt">
+BetaFezCacaudaNetaem09-06-2026!!##$$
+</file>
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+<file path="web/firebase-messaging-sw.js">
+importScripts("https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js");
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+firebase.initializeApp({
+  apiKey: "AIzaSyBXx3V2Ai8f--lxakiI0HdTf9pIhT2aRko",
+  authDomain: "cacau-da-neta.firebaseapp.com",
+  projectId: "cacau-da-neta",
+  storageBucket: "cacau-da-neta.firebasestorage.app",
+  messagingSenderId: "594909165569",
+  appId: "1:594909165569:web:89e6ae1c47aeba08b7a800"
+});
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF">
-
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
-
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Cacau da Neta">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>Cacau da Neta</title>
-  <link rel="manifest" href="manifest.json">
-</head>
-<body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
-
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
-  <script src="flutter_bootstrap.js" async></script>
-</body>
-</html>
+const messaging = firebase.messaging();
+messaging.onBackgroundMessage((payload) => {
+  self.registration.showNotification(payload.notification.title, {
+    body: payload.notification.body,
+  });
+});
 </file>
 
 <file path="web/manifest.json">
@@ -13243,6 +12185,10 @@ flutter {
 }
 </file>
 
+<file path="firebase.json">
+{"hosting":{"public":"build/web","ignore":["firebase.json","**/.*","**/node_modules/**"],"rewrites":[{"source":"**","destination":"/index.html"}]},"flutter":{"platforms":{"android":{"default":{"projectId":"cacau-da-neta","appId":"1:594909165569:android:abefc81b55f93a6cb7a800","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"cacau-da-neta","configurations":{"android":"1:594909165569:android:abefc81b55f93a6cb7a800","ios":"1:594909165569:ios:5e8d2ecfc4bf19c2b7a800","macos":"1:594909165569:ios:624afc01acf18e6cb7a800","web":"1:594909165569:web:89e6ae1c47aeba08b7a800","windows":"1:594909165569:web:e3c38b76be3093ccb7a800"}}}}},"functions":[{"source":"functions","codebase":"default","disallowLegacyRuntimeConfig":true,"ignore":["node_modules",".git","firebase-debug.log","firebase-debug.*.log","*.local"]}],"firestore":{"database":"(default)","location":"southamerica-east1","rules":"firestore.rules","indexes":"firestore.indexes.json"}}
+</file>
+
 <file path="ios/Podfile">
 platform :ios, '15.5'
 
@@ -13337,6 +12283,1161 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
+}
+</file>
+
+<file path="lib/data/services/image_upload_service.dart">
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
+
+class ImageUploadService {
+  ImageUploadService({
+    FirebaseStorage? storage,
+  }) : _storage = storage ?? FirebaseStorage.instance;
+  final FirebaseStorage _storage;
+
+  Future<String> uploadProductImage({
+    required File file,
+    required String fileName,
+  }) async {
+    final ref = _storage.ref().child('products').child(fileName);
+    final task = await ref.putFile(file);
+    return task.ref.getDownloadURL();
+  }
+
+  Future<String> uploadProductImageBytes({
+    required Uint8List bytes,
+    required String fileName,
+  }) async {
+    final ref = _storage.ref().child('products').child(fileName);
+    final task = await ref.putData(bytes);
+    return task.ref.getDownloadURL();
+  }
+}
+</file>
+
+<file path="lib/data/services/xlsx_import_service.dart">
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:excel/excel.dart';
+
+class XlsxImportResult {
+  const XlsxImportResult({
+    required this.criados,
+    required this.atualizados,
+    required this.erros,
+    required this.mensagensErro,
+  });
+  final int criados;
+  final int atualizados;
+  final int erros;
+  final List<String> mensagensErro;
+  bool get sucesso => erros == 0;
+  int get total => criados + atualizados;
+}
+
+class _ProdutoXlsx {
+  const _ProdutoXlsx({
+    required this.nome,
+    required this.quantidade,
+    required this.preco,
+    required this.categoria,
+  });
+  final String nome;
+  final String quantidade;
+  final double preco;
+  final String categoria;
+}
+
+class XlsxImportService {
+  XlsxImportService({FirebaseFirestore? firestore})
+    : _db = firestore ?? FirebaseFirestore.instance;
+  final FirebaseFirestore _db;
+
+  /// Lê o arquivo .xlsx e importa os produtos para o Firestore.
+  ///
+  /// Formato esperado da planilha:
+  ///   Linha 1: cabeçalho (Nome | Quantity | Preço | Categoria)
+  ///   Linha 2+: dados
+  ///   Coluna A: Nome
+  ///   Coluna B: Quantity (ex: 250g)
+  ///   Coluna C: Preço (número)
+  ///   Coluna D: Categoria (ex: Nibs | Chá | Amêndoas | Geral)
+  Future<XlsxImportResult> importar(File arquivo) async {
+    final bytes = await arquivo.readAsBytes();
+    return importarBytes(bytes);
+  }
+
+  Future<XlsxImportResult> importarBytes(Uint8List bytes) async {
+    final workbook = Excel.decodeBytes(bytes);
+    final sheetName = workbook.sheets.keys.first;
+    final sheet = workbook.sheets[sheetName]!;
+    final produtos = _lerProdutos(sheet);
+    if (produtos.isEmpty) {
+      return const XlsxImportResult(
+        criados: 0,
+        atualizados: 0,
+        erros: 1,
+        mensagensErro: ['Nenhum produto encontrado na planilha.'],
+      );
+    }
+    return _salvarNoBanco(produtos);
+  }
+
+  List<_ProdutoXlsx> _lerProdutos(Sheet sheet) {
+    final produtos = <_ProdutoXlsx>[];
+    // Linha 0 = cabeçalho, começa na linha 1
+    for (int i = 1; i < sheet.maxRows; i++) {
+      final row = sheet.row(i);
+      final nome = _cellString(row, 0);
+      final quantidade = _cellString(row, 1);
+      final precoRaw = _cellString(row, 2);
+      final categoria = _cellString(row, 3);
+      if (nome.isEmpty) continue;
+      final preco =
+          double.tryParse(
+            precoRaw
+                .replaceAll('R\$', '')
+                .replaceAll('.', '')
+                .replaceAll(',', '.')
+                .trim(),
+          ) ??
+          0;
+      if (preco <= 0) continue;
+      produtos.add(
+        _ProdutoXlsx(
+          nome: nome,
+          quantidade: quantidade,
+          preco: preco,
+          categoria: categoria,
+        ),
+      );
+    }
+    return produtos;
+  }
+
+  String _cellString(List<Data?> row, int index) {
+    if (index >= row.length) return '';
+    final cell = row[index];
+    if (cell == null || cell.value == null) return '';
+    return cell.value.toString().trim();
+  }
+
+  String _mapCategoria(String categoria) {
+    return categoria.isNotEmpty ? categoria : 'Geral';
+  }
+
+  Future<XlsxImportResult> _salvarNoBanco(List<_ProdutoXlsx> produtos) async {
+    final colecao = _db.collection('products');
+    int criados = 0;
+    int atualizados = 0;
+    int erros = 0;
+    final mensagensErro = <String>[];
+    for (final p in produtos) {
+      try {
+        final descricao = p.quantidade.isNotEmpty
+            ? 'Embalagem: ${p.quantidade}'
+            : '';
+        final categoria = _mapCategoria(p.categoria);
+        final agora = FieldValue.serverTimestamp();
+        final snapshot = await colecao
+            .where('name', isEqualTo: p.nome)
+            .where('description', isEqualTo: descricao)
+            .limit(1)
+            .get();
+        if (snapshot.docs.isNotEmpty) {
+          await snapshot.docs.first.reference.update({
+            'price': p.preco,
+            'category': categoria,
+            'updatedAt': agora,
+          });
+          atualizados++;
+        } else {
+          await colecao.add({
+            'name': p.nome,
+            'description': descricao,
+            'price': p.preco,
+            'category': categoria,
+            'imageUrl': '',
+            'isActive': true,
+            'isFeatured': false,
+            'createdAt': agora,
+            'updatedAt': agora,
+          });
+          criados++;
+        }
+      } catch (e) {
+        erros++;
+        mensagensErro.add('${p.nome}: ${e.toString()}');
+      }
+    }
+    return XlsxImportResult(
+      criados: criados,
+      atualizados: atualizados,
+      erros: erros,
+      mensagensErro: mensagensErro,
+    );
+  }
+}
+</file>
+
+<file path="lib/presentation/providers/product_provider.dart">
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/product_model.dart';
+import '../../data/repositories/product_repository.dart';
+import '../../data/services/image_upload_service.dart';
+final productRepositoryProvider = Provider<ProductRepository>((ref) {
+  return ProductRepository();
+});
+final imageUploadServiceProvider = Provider<ImageUploadService>((ref) {
+  return ImageUploadService();
+});
+// Stream reativo — tela admin de produtos
+final allProductsProvider = StreamProvider<List<ProductModel>>((ref) {
+  return ref.read(productRepositoryProvider).watchAllProducts();
+});
+// ---- Paginação ----
+const int _kPageSize = 50;
+class ProductPageState {
+  const ProductPageState({
+    this.products = const [],
+    this.isLoading = false,
+    this.hasMore = true,
+    this.lastDoc,
+    this.error,
+  });
+  final List<ProductModel> products;
+  final bool isLoading;
+  final bool hasMore;
+  final DocumentSnapshot? lastDoc;
+  final String? error;
+  ProductPageState copyWith({
+    List<ProductModel>? products,
+    bool? isLoading,
+    bool? hasMore,
+    DocumentSnapshot? lastDoc,
+    String? error,
+    bool clearLastDoc = false,
+    bool clearError = false,
+  }) {
+    return ProductPageState(
+      products: products ?? this.products,
+      isLoading: isLoading ?? this.isLoading,
+      hasMore: hasMore ?? this.hasMore,
+      lastDoc: clearLastDoc ? null : (lastDoc ?? this.lastDoc),
+      error: clearError ? null : (error ?? this.error),
+    );
+  }
+}
+class ProductPaginationNotifier
+    extends StateNotifier<ProductPageState> {
+  ProductPaginationNotifier(this._repository)
+      : super(const ProductPageState()) {
+    fetchFirst();
+  }
+  final ProductRepository _repository;
+  Future<void> fetchFirst() async {
+    state = const ProductPageState(isLoading: true);
+    try {
+      final page = await _repository.getActiveProductsPage(
+        limit: _kPageSize,
+      );
+      state = ProductPageState(
+        products: page.products,
+        lastDoc: page.lastDoc,
+        hasMore: page.products.length >= _kPageSize,
+        isLoading: false,
+      );
+    } catch (e) {
+      state = ProductPageState(isLoading: false, error: e.toString());
+    }
+  }
+  Future<void> loadMore() async {
+    if (state.isLoading || !state.hasMore || state.lastDoc == null) return;
+    state = state.copyWith(isLoading: true);
+    try {
+      final page = await _repository.getActiveProductsPage(
+        limit: _kPageSize,
+        startAfter: state.lastDoc,
+      );
+      state = state.copyWith(
+        products: [...state.products, ...page.products],
+        lastDoc: page.lastDoc,
+        hasMore: page.products.length >= _kPageSize,
+        isLoading: false,
+        clearError: true,
+      );
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+}
+final productPaginationProvider =
+    StateNotifierProvider<ProductPaginationNotifier, ProductPageState>(
+  (ref) => ProductPaginationNotifier(ref.read(productRepositoryProvider)),
+);
+// ---- Ações de escrita (admin) ----
+final productActionsProvider = Provider<ProductActions>((ref) {
+  return ProductActions(
+    repository: ref.read(productRepositoryProvider),
+    imageUploadService: ref.read(imageUploadServiceProvider),
+  );
+});
+class ProductActions {
+  const ProductActions({
+    required ProductRepository repository,
+    required ImageUploadService imageUploadService,
+  })  : _repository = repository,
+        _imageUploadService = imageUploadService;
+  final ProductRepository _repository;
+  final ImageUploadService _imageUploadService;
+  Future<void> createProduct({
+    required String name,
+    required String description,
+    required double price,
+    required String category,
+    required bool isActive,
+    required bool isFeatured,
+    File? imageFile,
+    Uint8List? imageBytes,
+  }) async {
+    var imageUrl = '';
+    final fileName =
+        '${DateTime.now().millisecondsSinceEpoch}_${_sanitizeFileName(name)}.jpg';
+    if (imageBytes != null) {
+      imageUrl = await _imageUploadService.uploadProductImageBytes(
+        bytes: imageBytes,
+        fileName: fileName,
+      );
+    } else if (imageFile != null) {
+      imageUrl = await _imageUploadService.uploadProductImage(
+        file: imageFile,
+        fileName: fileName,
+      );
+    }
+    final product = ProductModel.empty().copyWith(
+      name: name.trim(),
+      description: description.trim(),
+      price: price,
+      category: category.trim(),
+      imageUrl: imageUrl,
+      isActive: isActive,
+      isFeatured: isFeatured,
+    );
+    await _repository.createProduct(product);
+  }
+
+  Future<void> updateProduct({
+    required ProductModel product,
+    File? newImageFile,
+    Uint8List? newImageBytes,
+  }) async {
+    var imageUrl = product.imageUrl;
+    final fileName =
+        '${DateTime.now().millisecondsSinceEpoch}_${_sanitizeFileName(product.name)}.jpg';
+    if (newImageBytes != null) {
+      imageUrl = await _imageUploadService.uploadProductImageBytes(
+        bytes: newImageBytes,
+        fileName: fileName,
+      );
+    } else if (newImageFile != null) {
+      imageUrl = await _imageUploadService.uploadProductImage(
+        file: newImageFile,
+        fileName: fileName,
+      );
+    }
+    await _repository.updateProduct(product.copyWith(imageUrl: imageUrl));
+  }
+  Future<void> setProductActive({
+    required String productId,
+    required bool isActive,
+  }) async {
+    await _repository.setProductActive(
+      productId: productId,
+      isActive: isActive,
+    );
+  }
+  Future<void> deleteProduct(String productId) async {
+    await _repository.deleteProduct(productId);
+  }
+  String _sanitizeFileName(String value) {
+    final normalized = value
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_')
+        .replaceAll(RegExp(r'^_|_$'), '');
+    return normalized.isEmpty ? 'produto' : normalized;
+  }
+}
+</file>
+
+<file path="lib/presentation/screens/admin/admin_import_screen.dart">
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/user_provider.dart';
+import '../../../../data/services/xlsx_import_service.dart';
+
+class AdminImportScreen extends ConsumerStatefulWidget {
+  const AdminImportScreen({super.key});
+  @override
+  ConsumerState<AdminImportScreen> createState() => _AdminImportScreenState();
+}
+
+class _AdminImportScreenState extends ConsumerState<AdminImportScreen> {
+  final _service = XlsxImportService();
+  bool _isLoading = false;
+  String? _arquivoNome;
+  File? _arquivoSelecionado;
+  Uint8List? _arquivoBytesWeb;
+  XlsxImportResult? _resultado;
+  Future<void> _selecionarArquivo() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+      withData: kIsWeb,
+    );
+    if (result == null) return;
+    if (kIsWeb) {
+      final bytes = result.files.single.bytes;
+      if (bytes == null) return;
+      setState(() {
+        _arquivoBytesWeb = bytes;
+        _arquivoSelecionado = null;
+        _arquivoNome = result.files.single.name;
+        _resultado = null;
+      });
+    } else {
+      if (result.files.single.path == null) return;
+      setState(() {
+        _arquivoSelecionado = File(result.files.single.path!);
+        _arquivoBytesWeb = null;
+        _arquivoNome = result.files.single.name;
+        _resultado = null;
+      });
+    }
+  }
+
+  Future<void> _importar() async {
+    if (_arquivoSelecionado == null && _arquivoBytesWeb == null) return;
+    setState(() {
+      _isLoading = true;
+      _resultado = null;
+    });
+    try {
+      final XlsxImportResult resultado;
+      if (kIsWeb && _arquivoBytesWeb != null) {
+        resultado = await _service.importarBytes(_arquivoBytesWeb!);
+      } else {
+        resultado = await _service.importar(_arquivoSelecionado!);
+      }
+      setState(() => _resultado = resultado);
+    } catch (e) {
+      setState(() {
+        _resultado = XlsxImportResult(
+          criados: 0,
+          atualizados: 0,
+          erros: 1,
+          mensagensErro: [e.toString()],
+        );
+      });
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentUser = ref.watch(currentUserProfileProvider).value;
+    if (currentUser == null || !currentUser.isMaster) {
+      return const Scaffold(body: Center(child: Text('Acesso negado.')));
+    }
+    return Scaffold(
+      appBar: AppBar(title: const Text('Importar Planilha')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Instrução
+            Card(
+              color: AppColors.primary.withValues(alpha: 0.07),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: AppColors.primary,
+                          size: 20,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Formato esperado da planilha',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    _FormatRow(col: 'A', label: 'Nome do produto'),
+                    _FormatRow(col: 'B', label: 'Quantidade (ex: 250g)'),
+                    _FormatRow(col: 'C', label: 'Preço (número, ex: 20.90)'),
+                    _FormatRow(
+                      col: 'D',
+                      label: 'Categoria (ex: Nibs / Chá / Amêndoas / Geral)',
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Linha 1: cabeçalho  •  A partir da linha 2: dados',
+                      style: TextStyle(fontSize: 12, color: AppColors.grey600),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Seleção de arquivo
+            OutlinedButton.icon(
+              onPressed: _isLoading ? null : _selecionarArquivo,
+              icon: const Icon(Icons.upload_file_outlined),
+              label: const Text('Selecionar planilha .xlsx'),
+            ),
+            if (_arquivoNome != null) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.description_outlined,
+                    size: 18,
+                    color: AppColors.grey600,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _arquivoNome!,
+                      style: const TextStyle(color: AppColors.grey700),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            const SizedBox(height: 24),
+            // Botão importar
+            FilledButton.icon(
+              onPressed: ((_arquivoSelecionado == null && _arquivoBytesWeb == null) || _isLoading)
+                  ? null
+                  : _importar,
+              icon: _isLoading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.white,
+                      ),
+                    )
+                  : const Icon(Icons.cloud_upload_outlined),
+              label: Text(
+                _isLoading ? 'Importando...' : 'Importar para o banco',
+              ),
+            ),
+            // Resultado
+            if (_resultado != null) ...[
+              const SizedBox(height: 24),
+              _ResultadoCard(resultado: _resultado!),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FormatRow extends StatelessWidget {
+  const _FormatRow({required this.col, required this.label});
+  final String col;
+  final String label;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              col,
+              style: const TextStyle(
+                color: AppColors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(label, style: const TextStyle(fontSize: 14)),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResultadoCard extends StatelessWidget {
+  const _ResultadoCard({required this.resultado});
+  final XlsxImportResult resultado;
+  @override
+  Widget build(BuildContext context) {
+    final cor = resultado.sucesso ? AppColors.success : AppColors.error;
+    final icone = resultado.sucesso
+        ? Icons.check_circle_outline
+        : Icons.error_outline;
+    final titulo = resultado.sucesso
+        ? '${resultado.total} produto(s) importado(s) com sucesso!'
+        : 'Importação concluída com erros';
+    return Card(
+      color: cor.withValues(alpha: 0.08),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: cor.withValues(alpha: 0.3)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icone, color: cor),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    titulo,
+                    style: TextStyle(fontWeight: FontWeight.w700, color: cor),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _StatRow(
+              icon: Icons.add_circle_outline,
+              label: 'Criados',
+              value: resultado.criados,
+              color: AppColors.success,
+            ),
+            _StatRow(
+              icon: Icons.edit_outlined,
+              label: 'Atualizados',
+              value: resultado.atualizados,
+              color: AppColors.info,
+            ),
+            if (resultado.erros > 0) ...[
+              _StatRow(
+                icon: Icons.cancel_outlined,
+                label: 'Erros',
+                value: resultado.erros,
+                color: AppColors.error,
+              ),
+              const SizedBox(height: 8),
+              ...resultado.mensagensErro.map(
+                (msg) => Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    '• $msg',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.error,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatRow extends StatelessWidget {
+  const _StatRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+  final IconData icon;
+  final String label;
+  final int value;
+  final Color color;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: color),
+          const SizedBox(width: 8),
+          Text(label, style: const TextStyle(color: AppColors.grey700)),
+          const Spacer(),
+          Text(
+            '$value',
+            style: TextStyle(fontWeight: FontWeight.w700, color: color),
+          ),
+        ],
+      ),
+    );
+  }
+}
+</file>
+
+<file path="lib/presentation/screens/admin/admin_products_screen.dart">
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../data/models/product_model.dart';
+import '../../providers/product_provider.dart';
+import '../../../core/extensions/format_extensions.dart';
+import '../../providers/user_provider.dart';
+
+class AdminProductsScreen extends ConsumerStatefulWidget {
+  const AdminProductsScreen({super.key});
+  @override
+  ConsumerState<AdminProductsScreen> createState() =>
+      _AdminProductsScreenState();
+}
+
+class _AdminProductsScreenState extends ConsumerState<AdminProductsScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _categoryController = TextEditingController();
+  bool _isActive = true;
+  bool _isFeatured = false;
+  bool _isSaving = false;
+  File? _selectedImage;
+  Uint8List? _selectedImageBytes;
+  ProductModel? _editingProduct;
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _priceController.dispose();
+    _categoryController.dispose();
+    super.dispose();
+  }
+
+  void _startEditing(ProductModel product) {
+    setState(() {
+      _editingProduct = product;
+      _nameController.text = product.name;
+      _descriptionController.text = product.description;
+      _priceController.text = product.price
+          .toStringAsFixed(2)
+          .replaceAll('.', ',');
+      _categoryController.text = product.category;
+      _isActive = product.isActive;
+      _isFeatured = product.isFeatured;
+      _selectedImage = null;
+    });
+    Scrollable.ensureVisible(
+      _formKey.currentContext ?? context,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  void _cancelEditing() {
+    setState(() {
+      _editingProduct = null;
+      _selectedImage = null;
+      _selectedImageBytes = null;
+      _isActive = true;
+      _isFeatured = false;
+    });
+    _formKey.currentState?.reset();
+    _nameController.clear();
+    _descriptionController.clear();
+    _priceController.clear();
+    _categoryController.clear();
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final xfile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (xfile == null) return;
+    if (kIsWeb) {
+      final bytes = await xfile.readAsBytes();
+      setState(() {
+        _selectedImageBytes = bytes;
+        _selectedImage = null;
+      });
+    } else {
+      setState(() {
+        _selectedImage = File(xfile.path);
+        _selectedImageBytes = null;
+      });
+    }
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    final rawPrice = _priceController.text.trim().replaceAll(',', '.');
+    final price = double.tryParse(rawPrice);
+    if (price == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Preço inválido.')));
+      return;
+    }
+    setState(() => _isSaving = true);
+    try {
+      final actions = ref.read(productActionsProvider);
+      if (_editingProduct != null) {
+        await actions.updateProduct(
+          product: _editingProduct!.copyWith(
+            name: _nameController.text.trim(),
+            description: _descriptionController.text.trim(),
+            price: price,
+            category: _categoryController.text.trim(),
+            isActive: _isActive,
+            isFeatured: _isFeatured,
+          ),
+          newImageFile: kIsWeb ? null : _selectedImage,
+          newImageBytes: kIsWeb ? _selectedImageBytes : null,
+        );
+      } else {
+        await actions.createProduct(
+          name: _nameController.text,
+          description: _descriptionController.text,
+          price: price,
+          category: _categoryController.text,
+          isActive: _isActive,
+          isFeatured: _isFeatured,
+          imageFile: kIsWeb ? null : _selectedImage,
+          imageBytes: kIsWeb ? _selectedImageBytes : null,
+        );
+      }
+      if (!mounted) return;
+      _cancelEditing();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _editingProduct != null
+                ? 'Produto atualizado com sucesso.'
+                : 'Produto cadastrado com sucesso.',
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Erro ao salvar produto.')));
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  Future<void> _confirmDelete(ProductModel product) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Excluir produto'),
+        content: Text(
+          'Excluir "${product.name}"? Esta ação não pode ser desfeita.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Excluir'),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+    try {
+      await ref.read(productActionsProvider).deleteProduct(product.id);
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Produto excluído.')));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Erro ao excluir produto.')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentUser = ref.watch(currentUserProfileProvider).value;
+    if (currentUser == null || !currentUser.isMaster) {
+      return const Scaffold(body: Center(child: Text('Acesso negado.')));
+    }
+    final productsAsync = ref.watch(allProductsProvider);
+    final isEditing = _editingProduct != null;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(isEditing ? 'Editar Produto' : 'Admin - Produtos'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (isEditing)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.edit,
+                          size: 18,
+                          color: AppColors.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Editando: ${_editingProduct!.name}',
+                            style: const TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: _cancelEditing,
+                          child: const Text('Cancelar edição'),
+                        ),
+                      ],
+                    ),
+                  ),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Nome'),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Informe o nome do produto.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _categoryController,
+                  decoration: const InputDecoration(labelText: 'Categoria'),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Informe a categoria.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _priceController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  decoration: const InputDecoration(labelText: 'Preço'),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Informe o preço.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 4,
+                  decoration: const InputDecoration(labelText: 'Descrição'),
+                ),
+                const SizedBox(height: 12),
+                SwitchListTile(
+                  value: _isActive,
+                  title: const Text('Produto ativo'),
+                  onChanged: (value) => setState(() => _isActive = value),
+                ),
+                SwitchListTile(
+                  value: _isFeatured,
+                  title: const Text('Produto em destaque'),
+                  onChanged: (value) => setState(() => _isFeatured = value),
+                ),
+                const SizedBox(height: 12),
+                if (_selectedImage != null || _selectedImageBytes != null) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: _selectedImageBytes != null
+                        ? Image.memory(
+                            _selectedImageBytes!,
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            _selectedImage!,
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  const SizedBox(height: 8),
+                ] else if (isEditing &&
+                    _editingProduct!.imageUrl.isNotEmpty) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      _editingProduct!.imageUrl,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      cacheWidth: 360,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Selecione uma nova foto para substituir.',
+                    style: TextStyle(fontSize: 12, color: AppColors.grey600),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                OutlinedButton(
+                  onPressed: _pickImage,
+                  child: Text(isEditing ? 'Trocar foto' : 'Selecionar foto'),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _isSaving ? null : _submit,
+                  child: _isSaving
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(
+                          isEditing ? 'Salvar alterações' : 'Cadastrar produto',
+                        ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Divider(),
+          const SizedBox(height: 12),
+          const Text(
+            'Produtos cadastrados',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 12),
+          productsAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (_, _) => const Text('Erro ao carregar produtos.'),
+            data: (products) {
+              if (products.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Text('Nenhum produto cadastrado.'),
+                );
+              }
+              return Column(children: products.map(_buildProductTile).toList());
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductTile(ProductModel product) {
+    final priceText = product.price.toBRL();
+    return Card(
+      child: ListTile(
+        leading: product.imageUrl.isNotEmpty
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  product.imageUrl,
+                  width: 52,
+                  height: 52,
+                  fit: BoxFit.cover,
+                  cacheWidth: 104,
+                  errorBuilder: (_, _, _) => SizedBox(
+                    width: 52,
+                    height: 52,
+                    child: Image.asset('assets/images/Logomarca com nome.jpeg'),
+                  ),
+                ),
+              )
+            : SizedBox(
+                width: 52,
+                height: 52,
+                child: Image.asset('assets/images/Logomarca com nome.jpeg'),
+              ),
+        title: Text(product.name),
+        subtitle: Text('${product.category} · $priceText'),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Switch(
+              value: product.isActive,
+              onChanged: (value) {
+                ref
+                    .read(productActionsProvider)
+                    .setProductActive(productId: product.id, isActive: value);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.edit_outlined, color: AppColors.primary),
+              onPressed: () => _startEditing(product),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline, color: AppColors.error),
+              onPressed: () => _confirmDelete(product),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 </file>
 
@@ -13566,6 +13667,55 @@ class _MenuCard extends StatelessWidget {
     );
   }
 }
+</file>
+
+<file path="web/index.html">
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Loja online Cacau da Neta">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Cacau da Neta">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Cacau da Neta</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
 </file>
 
 <file path="android/app/google-services_PetJoy.json">

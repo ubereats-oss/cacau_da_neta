@@ -112,44 +112,59 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             ),
         ],
       ),
-      body: cart.items.isEmpty
-          ? const Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 64,
-                    color: AppColors.grey400,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth >= 700;
+          final content = cart.items.isEmpty
+              ? const Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.shopping_cart_outlined,
+                        size: 64,
+                        color: AppColors.grey400,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Seu carrinho está vazio.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.grey600,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Seu carrinho está vazio.',
-                    style: TextStyle(fontSize: 16, color: AppColors.grey600),
-                  ),
-                ],
-              ),
-            )
-          : Column(
-              children: [
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: cart.items.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      return _CartItemTile(item: cart.items[index]);
-                    },
-                  ),
-                ),
-                _CartSummary(
-                  cart: cart,
-                  isAuthenticated: isAuthenticated,
-                  isLoading: _isCheckingOut,
-                  onCheckout: _handleCheckout,
-                ),
-              ],
+                )
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: cart.items.length,
+                        separatorBuilder: (_, _) => const SizedBox(height: 8),
+                        itemBuilder: (context, index) {
+                          return _CartItemTile(item: cart.items[index]);
+                        },
+                      ),
+                    ),
+                    _CartSummary(
+                      cart: cart,
+                      isAuthenticated: isAuthenticated,
+                      isLoading: _isCheckingOut,
+                      onCheckout: _handleCheckout,
+                    ),
+                  ],
+                );
+          if (!isWeb) return content;
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: content,
             ),
+          );
+        },
+      ),
     );
   }
 }

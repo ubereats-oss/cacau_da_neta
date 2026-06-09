@@ -24,4 +24,7 @@ class AppDimensions {
   // Screen Padding
   static const double screenPaddingHorizontal = 16.0;
   static const double screenPaddingVertical = 16.0;
+  // Web / Responsive
+  static const double webBreakpoint = 700.0;
+  static const double webMaxContentWidth = 1100.0;
 }
