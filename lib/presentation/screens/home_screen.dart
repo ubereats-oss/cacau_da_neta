@@ -122,7 +122,7 @@ class HomeScreen extends ConsumerWidget {
                           crossAxisCount: 3,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
-                          childAspectRatio: double.infinity / 120,
+                          childAspectRatio: 1.5,
                           children: _buildMenuCards(
                             context,
                             isAuthenticated: isAuthenticated,
